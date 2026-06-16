@@ -6,9 +6,9 @@ spring:
     name: chatprocessor
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tardis}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:tardis}}
+    username: ${SPRING_DATASOURCE_USERNAME:${PGUSER:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${PGPASSWORD:password}}
     driver-class-name: org.postgresql.Driver
 
   jpa:
