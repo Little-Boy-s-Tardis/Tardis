@@ -20,7 +20,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/webhooks")
-@CrossOrigin(origins = "*")
 public class WebhookController {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WebhookController.class);

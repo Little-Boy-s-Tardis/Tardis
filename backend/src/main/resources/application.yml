@@ -28,6 +28,8 @@ spring:
 
 # Application Custom Properties
 app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,https://tardis-hazel.vercel.app}
   webhook:
     verify-token: ${APP_WEBHOOK_VERIFY_TOKEN:antigravity-secret-verify-token}
   rabbitmq:

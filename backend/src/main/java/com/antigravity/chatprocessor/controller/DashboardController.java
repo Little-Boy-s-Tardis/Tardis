@@ -13,7 +13,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/announcements")
-@CrossOrigin(origins = "*")
 public class DashboardController {
 
     private final AggregatedSummaryRepository aggregatedSummaryRepository;
