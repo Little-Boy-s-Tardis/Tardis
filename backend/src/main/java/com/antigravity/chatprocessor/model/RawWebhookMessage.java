@@ -10,7 +10,7 @@ import java.time.Instant;
 public class RawWebhookMessage {
 
     @Id
-    @Column(length = 36)
+    @Column(length = 255)
     private String id;
 
     @Column(nullable = false)
