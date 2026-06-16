@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: chatprocessor
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/antigravity
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# Application Custom Properties
+app:
+  webhook:
+    verify-token: "antigravity-secret-verify-token"
+  rabbitmq:
+    queue-name: "chat.messages.queue"
+    exchange-name: "chat.messages.exchange"
+    routing-key: "chat.message.routingKey"
+  batch:
+    max-delay-minutes: 5
+    silence-delay-seconds: 60
+    thread-pool-size: 4
