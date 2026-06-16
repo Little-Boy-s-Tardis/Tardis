@@ -115,5 +115,79 @@ curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -
 
 ---
 
+## Kịch bản 4: Cảnh báo khẩn cấp hệ thống (Độ ưu tiên: Cao)
+* **Người gửi**: `Judge David (Tech Lead)`
+* **Nội dung**: Thông báo bảo trì đột xuất hệ thống nộp bài thi.
+
+### PowerShell
+```powershell
+$body = @{
+  object = "whatsapp_business_account"
+  entry = @(@{
+    id = "test-msg-id-4"
+    changes = @(@{
+      value = @{
+        messaging_product = "whatsapp"
+        contacts = @(@{ profile = @{ name = "Judge David (Tech Lead)" }; wa_id = "84911112222" })
+        messages = @(@{
+          from = "84911112222"
+          id = "wamid.testmsg4"
+          timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
+          text = @{ body = "Cảnh báo khẩn cấp: Hệ thống cổng nộp bài thi sẽ tạm đóng để bảo trì đột xuất trong 15 phút tới. Vui lòng dừng mọi tiến trình push cho đến khi có thông báo mới." }
+          type = "text"
+        })
+      }
+      field = "messages"
+    })
+  })
+} | ConvertTo-Json -Depth 10
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp" -Method Post -ContentType "application/json" -Body $bodyBytes
+```
+
+### CMD
+```cmd
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-4\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg4\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Canh bao khan cap: He thong cong nop bai thi se tam dong de bao tri dot xuat trong 15 phut toi. Vui long dung moi tien trinh push cho den khi co thong bao moi.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
+```
+
+---
+
+## Kịch bản 5: Thay đổi thể lệ khẩn cấp (Độ ưu tiên: Cao)
+* **Người gửi**: `Judge Jessica (Design Coach)`
+* **Nội dung**: Cập nhật khẩn cấp tiêu chí chấm điểm thiết kế.
+
+### PowerShell
+```powershell
+$body = @{
+  object = "whatsapp_business_account"
+  entry = @(@{
+    id = "test-msg-id-5"
+    changes = @(@{
+      value = @{
+        messaging_product = "whatsapp"
+        contacts = @(@{ profile = @{ name = "Judge Jessica (Design Coach)" }; wa_id = "84955556666" })
+        messages = @(@{
+          from = "84955556666"
+          id = "wamid.testmsg5"
+          timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
+          text = @{ body = "Urgent update for all teams: We have updated the UI/UX design checklist. Please review it immediately to ensure compliance with contrast standards." }
+          type = "text"
+        })
+      }
+      field = "messages"
+    })
+  })
+} | ConvertTo-Json -Depth 10
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp" -Method Post -ContentType "application/json" -Body $bodyBytes
+```
+
+### CMD
+```cmd
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-5\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge Jessica (Design Coach)\"},\"wa_id\":\"84955556666\"}],\"messages\":[{\"from\":\"84955556666\",\"id\":\"wamid.testmsg5\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Urgent update for all teams: We have updated the UI/UX design checklist. Please review it immediately to ensure compliance with contrast standards.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
+```
+
+---
+
 ## Cách chạy thử nghiệm trên máy Local (localhost)
 Nếu chạy backend Spring Boot local, chỉ cần thay đổi địa chỉ domain từ `https://tardis-production.up.railway.app` thành `http://localhost:8080` ở dòng `Invoke-RestMethod` hoặc `curl`.
