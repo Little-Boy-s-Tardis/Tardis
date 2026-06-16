@@ -1,12 +1,12 @@
 # Tardis Webhook Test Scenarios
 
-Sử dụng tài liệu này để copy nhanh các lệnh thử nghiệm gửi sự kiện webhook đến hệ thống backend của bạn. Bạn có thể chạy chúng ở bất kỳ thư mục nào trên máy tính.
+Use this document to quickly copy test commands for sending webhook events to your backend service. You can run these commands from any folder on your machine.
 
 ---
 
-## Kịch bản 1: Thông báo kỹ thuật (Độ ưu tiên: Trung bình)
-* **Người gửi**: `Judge David (Tech Lead)`
-* **Nội dung**: Yêu cầu cấu hình API prefix `/api/v1` và bật CORS.
+## Scenario 1: Technical Announcement (Importance: Medium)
+* **Sender**: `Judge David (Tech Lead)`
+* **Content**: Request to configure API prefix `/api/v1` and enable CORS.
 
 ### PowerShell
 ```powershell
@@ -22,7 +22,7 @@ $body = @{
           from = "84911112222"
           id = "wamid.testmsg1"
           timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
-          text = @{ body = "Các đội lưu ý: Hệ thống chấm điểm tự động sẽ bắt đầu quét. Yêu cầu các Spring Boot controller phải sử dụng tiền tố /api/v1 và cấu hình CORS đầy đủ." }
+          text = @{ body = "Attention teams: The automated grading system is starting its scan. Ensure all Spring Boot controllers use the /api/v1 prefix and have CORS properly configured." }
           type = "text"
         })
       }
@@ -36,14 +36,14 @@ Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks
 
 ### CMD
 ```cmd
-curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-1\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg1\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Cac doi luu y: He thong cham diem tu dong se bat dau quet. Yeu cau cac Spring Boot controller phai su dung tien to /api/v1 va cau hinh CORS day du.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-1\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg1\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Attention teams: The automated grading system is starting its scan. Ensure all Spring Boot controllers use the /api/v1 prefix and have CORS properly configured.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
 ```
 
 ---
 
-## Kịch bản 2: Thông báo khẩn cấp gia hạn thời gian (Độ ưu tiên: Cao)
-* **Người gửi**: `Judge Minh (Trưởng Ban)`
-* **Nội dung**: Gia hạn nộp bài thi thêm 2 tiếng do sự cố mạng.
+## Scenario 2: Emergency Deadline Extension (Importance: High)
+* **Sender**: `Judge Minh (Chief)`
+* **Content**: Extending submission deadline by 2 hours due to network issues.
 
 ### PowerShell
 ```powershell
@@ -54,12 +54,12 @@ $body = @{
     changes = @(@{
       value = @{
         messaging_product = "whatsapp"
-        contacts = @(@{ profile = @{ name = "Judge Minh (Trưởng Ban)" }; wa_id = "84933334444" })
+        contacts = @(@{ profile = @{ name = "Judge Minh (Chief)" }; wa_id = "84933334444" })
         messages = @(@{
           from = "84933334444"
           id = "wamid.testmsg2"
           timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
-          text = @{ body = "Thông báo khẩn cấp: Do hệ thống mạng bị nghẽn đường truyền, Ban tổ chức quyết định gia hạn thời gian nộp bài thi thêm 2 tiếng. Hạn chót mới là 24:00 đêm nay." }
+          text = @{ body = "Emergency Announcement: Due to network connection congestion, the judges decided to extend the submission deadline by 2 hours. The new deadline is 24:00 tonight." }
           type = "text"
         })
       }
@@ -73,14 +73,14 @@ Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks
 
 ### CMD
 ```cmd
-curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-2\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge Minh (Truong Ban)\"},\"wa_id\":\"84933334444\"}],\"messages\":[{\"from\":\"84933334444\",\"id\":\"wamid.testmsg2\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Thong bao khan cap: Do he thong mang bi nghen duong truyen, Ban to chuc quyet dinh gia han thoi gian nop bai thi them 2 tieng. Han chot moi la 24:00 dem nay.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-2\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge Minh (Chief)\"},\"wa_id\":\"84933334444\"}],\"messages\":[{\"from\":\"84933334444\",\"id\":\"wamid.testmsg2\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Emergency Announcement: Due to network connection congestion, the judges decided to extend the submission deadline by 2 hours. The new deadline is 24:00 tonight.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
 ```
 
 ---
 
-## Kịch bản 3: Thông báo Q&A UI/UX (Độ ưu tiên: Thấp)
-* **Người gửi**: `Judge Jessica (Design Coach)`
-* **Nội dung**: Tổ chức buổi thảo luận UI/UX trên Discord lúc 16:00.
+## Scenario 3: Q&A Announcement (Importance: Low)
+* **Sender**: `Judge Jessica (Design Coach)`
+* **Content**: Hosting a Q&A discussion on Discord voice channel at 16:00.
 
 ### PowerShell
 ```powershell
@@ -96,7 +96,7 @@ $body = @{
           from = "84955556666"
           id = "wamid.testmsg3"
           timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
-          text = @{ body = "Chúng tôi sẽ mở một buổi thảo luận Q&A ngắn vào lúc 16:00 chiều nay trên kênh voice Discord để hướng dẫn các đội tối ưu hóa giao diện thiết kế và trải nghiệm người dùng UI/UX." }
+          text = @{ body = "We will host a brief Q&A session at 16:00 today on the Discord voice channel to guide teams on optimizing user interfaces and UI/UX design layouts." }
           type = "text"
         })
       }
@@ -110,14 +110,14 @@ Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks
 
 ### CMD
 ```cmd
-curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-3\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge Jessica (Design Coach)\"},\"wa_id\":\"84955556666\"}],\"messages\":[{\"from\":\"84955556666\",\"id\":\"wamid.testmsg3\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Chung toi se mo mot buoi thao luan Q&A ngan vao luc 16:00 chieu nay tren kenh voice Discord de huong dan cac doi toi uu hoa giao dien thiet ke va trai nghiem nguoi dung UI/UX.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-3\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge Jessica (Design Coach)\"},\"wa_id\":\"84955556666\"}],\"messages\":[{\"from\":\"84955556666\",\"id\":\"wamid.testmsg3\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"We will host a brief Q&A session at 16:00 today on the Discord voice channel to guide teams on optimizing user interfaces and UI/UX design layouts.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
 ```
 
 ---
 
-## Kịch bản 4: Cảnh báo khẩn cấp hệ thống (Độ ưu tiên: Cao)
-* **Người gửi**: `Judge David (Tech Lead)`
-* **Nội dung**: Thông báo bảo trì đột xuất hệ thống nộp bài thi.
+## Scenario 4: Emergency System Alert (Importance: High)
+* **Sender**: `Judge David (Tech Lead)`
+* **Content**: Scheduled maintenance downtime alert.
 
 ### PowerShell
 ```powershell
@@ -133,7 +133,7 @@ $body = @{
           from = "84911112222"
           id = "wamid.testmsg4"
           timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
-          text = @{ body = "Cảnh báo khẩn cấp: Hệ thống cổng nộp bài thi sẽ tạm đóng để bảo trì đột xuất trong 15 phút tới. Vui lòng dừng mọi tiến trình push cho đến khi có thông báo mới." }
+          text = @{ body = "Emergency Alert: The submission portal will be temporarily closed for unexpected maintenance in the next 15 minutes. Please halt all pushing until further notice." }
           type = "text"
         })
       }
@@ -147,14 +147,14 @@ Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks
 
 ### CMD
 ```cmd
-curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-4\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg4\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Canh bao khan cap: He thong cong nop bai thi se tam dong de bao tri dot xuat trong 15 phut toi. Vui long dung moi tien trinh push cho den khi co thong bao moi.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-4\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg4\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Emergency Alert: The submission portal will be temporarily closed for unexpected maintenance in the next 15 minutes. Please halt all pushing until further notice.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
 ```
 
 ---
 
-## Kịch bản 5: Thay đổi thể lệ khẩn cấp (Độ ưu tiên: Cao)
-* **Người gửi**: `Judge Jessica (Design Coach)`
-* **Nội dung**: Cập nhật khẩn cấp tiêu chí chấm điểm thiết kế.
+## Scenario 5: Urgent Rule Modification (Importance: High)
+* **Sender**: `Judge Jessica (Design Coach)`
+* **Content**: Urgent design evaluation guidelines modification.
 
 ### PowerShell
 ```powershell
@@ -189,5 +189,5 @@ curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -
 
 ---
 
-## Cách chạy thử nghiệm trên máy Local (localhost)
-Nếu chạy backend Spring Boot local, chỉ cần thay đổi địa chỉ domain từ `https://tardis-production.up.railway.app` thành `http://localhost:8080` ở dòng `Invoke-RestMethod` hoặc `curl`.
+## Testing locally (localhost)
+If you are running the Spring Boot backend service locally, replace `https://tardis-production.up.railway.app` with `http://localhost:8080` in the cURL or PowerShell commands.

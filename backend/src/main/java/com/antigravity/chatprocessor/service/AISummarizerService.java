@@ -115,7 +115,7 @@ public class AISummarizerService {
         
         Map<String, String> systemMsg = new HashMap<>();
         systemMsg.put("role", "system");
-        systemMsg.put("content", "Bạn là một AI quản lý cuộc thi. Hãy gom nhóm, tóm tắt danh sách các thông báo sau từ giám khảo dưới dạng danh sách các gạch đầu dòng ngắn gọn, súc tích bằng tiếng Việt. Tập trung vào: Hạn chót (deadline), Yêu cầu kỹ thuật và Các lưu ý quan trọng. Không sử dụng ký tự emoji ở đầu gạch đầu dòng.");
+        systemMsg.put("content", "You are a contest management assistant. Group and summarize the following announcements from judges into a concise list of bullet points in English. Focus on: deadlines, technical requirements, and key notes. Do not start bullet points with emojis.");
         chatMessages.add(systemMsg);
 
         Map<String, String> userMsg = new HashMap<>();
@@ -152,12 +152,12 @@ public class AISummarizerService {
             String contentLower = content.toLowerCase();
             String sender = msg.getSender();
 
-            if (contentLower.contains("deadline") || contentLower.contains("hạn nộp") || contentLower.contains("hạn chót") || contentLower.contains("dời")) {
-                bullets.add(String.format("Gia hạn/Hạn chót: Thông báo từ %s liên quan đến thời hạn: \"%s\"", sender, extractKeySentence(content)));
-            } else if (contentLower.contains("docker") || contentLower.contains("api") || contentLower.contains("port") || contentLower.contains("db")) {
-                bullets.add(String.format("Yêu cầu kỹ thuật: %s nhắc nhở thiết lập cấu hình: \"%s\"", sender, extractKeySentence(content)));
+            if (contentLower.contains("deadline") || contentLower.contains("hạn nộp") || contentLower.contains("hạn chót") || contentLower.contains("dời") || contentLower.contains("postponed")) {
+                bullets.add(String.format("Deadline Extension: Announcement from %s regarding timeline: \"%s\"", sender, extractKeySentence(content)));
+            } else if (contentLower.contains("docker") || contentLower.contains("api") || contentLower.contains("port") || contentLower.contains("db") || contentLower.contains("cors")) {
+                bullets.add(String.format("Technical Requirement: %s reminded about configuration: \"%s\"", sender, extractKeySentence(content)));
             } else {
-                bullets.add(String.format("Lưu ý từ %s: \"%s\"", sender, extractKeySentence(content)));
+                bullets.add(String.format("Key Note from %s: \"%s\"", sender, extractKeySentence(content)));
             }
         }
 
@@ -183,7 +183,7 @@ public class AISummarizerService {
     private Map<String, Object> buildWebSocketPayload(AggregatedSummary summary, List<ChatMessageDto> originals) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", summary.getId());
-        map.put("timestamp", "Vừa xong");
+        map.put("timestamp", "Just now");
         map.put("conversationId", summary.getConversationId());
 
         // Summaries list
@@ -213,11 +213,11 @@ public class AISummarizerService {
         map.put("originalMessage", combinedContent.toString());
 
         // Heuristics
-        String sender = "Ban Giám Khảo (Tổng hợp)";
+        String sender = "Judges (Aggregated)";
         String platform = "DISCORD";
         String importance = "MEDIUM";
         Set<String> tags = new HashSet<>();
-        tags.add("tóm-tắt");
+        tags.add("summary");
 
         if (!originals.isEmpty()) {
             if (originals.size() == 1) {
@@ -232,7 +232,7 @@ public class AISummarizerService {
                 if (originals.size() > 2) {
                     senders.append(" +").append(originals.size() - 2);
                 }
-                sender = "BGK: " + senders.toString();
+                sender = "Judges: " + senders.toString();
                 
                 boolean hasDiscord = originals.stream().anyMatch(m -> "DISCORD".equalsIgnoreCase(m.getPlatform()));
                 boolean hasWhatsapp = originals.stream().anyMatch(m -> "WHATSAPP".equalsIgnoreCase(m.getPlatform()));
@@ -246,11 +246,11 @@ public class AISummarizerService {
             boolean hasHigh = false;
             for (ChatMessageDto msg : originals) {
                 String content = msg.getContent().toLowerCase();
-                if (content.contains("hạn chót") || content.contains("deadline") || content.contains("khẩn cấp") || content.contains("dời") || content.contains("urgent")) {
+                if (content.contains("hạn chót") || content.contains("deadline") || content.contains("khẩn cấp") || content.contains("dời") || content.contains("urgent") || content.contains("emergency") || content.contains("critical")) {
                     hasHigh = true;
                 }
                 if (content.contains("deadline") || content.contains("hạn")) tags.add("deadline");
-                if (content.contains("luật") || content.contains("thể lệ")) tags.add("thể-lệ");
+                if (content.contains("rules") || content.contains("luật") || content.contains("thể lệ")) tags.add("rules");
                 if (content.contains("docker") || content.contains("compose")) tags.add("docker");
                 if (content.contains("api") || content.contains("spring")) tags.add("backend");
                 if (content.contains("ui") || content.contains("ux")) tags.add("frontend");

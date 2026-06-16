@@ -7,7 +7,7 @@ export function Nav() {
         <div className="nav-brand">
           <span className="brand-icon">T</span>
           <span className="brand-text">Tardis</span>
-          <span className="brand-subtext text-muted text-small" style={{ fontSize: '12px', marginLeft: '4px' }}>BGK Aggregator</span>
+          <span className="brand-subtext text-muted text-small" style={{ fontSize: '12px', marginLeft: '4px' }}>Judges Aggregator</span>
         </div>
         
         <div className="nav-links">

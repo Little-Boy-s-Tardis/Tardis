@@ -21,14 +21,14 @@ const WS_URL = import.meta.env.VITE_WS_URL || (API_BASE_URL.startsWith('https')
 const INITIAL_ANNOUNCEMENTS: Announcement[] = [
   {
     id: '1',
-    sender: 'Judge Minh (Trưởng Ban)',
+    sender: 'Judge Minh (Chief)',
     platform: 'DISCORD',
-    timestamp: '10 phút trước',
-    originalMessage: '@everyone Lưu ý quan trọng: Tôi thấy nhiều đội chưa hoàn thiện file README.md giới thiệu dự án. Ban giám khảo quyết định gia hạn thời gian nộp bài thi thêm 24 tiếng. Hạn chót mới là 22:00 ngày mai 18/06. Sau thời gian này, cổng nộp bài sẽ tự động đóng và không chấp nhận bất kỳ lý do kỹ thuật nào. Hãy kiểm tra kỹ docker-compose của các bạn trước khi push.',
+    timestamp: '10m ago',
+    originalMessage: '@everyone Important Note: I notice many teams have not finalized their project README.md. The judges decided to extend the submission deadline by 24 hours. The new deadline is 22:00 tomorrow June 18th. After this time, the portal will close automatically and no excuses will be accepted. Double-check your docker-compose before pushing.',
     aiSummary: [
-      'Hạn chót mới: Gia hạn thêm 24 tiếng, hạn cuối là 22:00 ngày mai 18/06.',
-      'Yêu cầu bắt buộc: Hoàn thiện đầy đủ file README.md giới thiệu dự án.',
-      'Kỹ thuật: Kiểm tra kỹ file docker-compose.yml trước khi push bài thi.'
+      'New Deadline: Extended by 24 hours, new deadline is 22:00 tomorrow June 18th.',
+      'Requirement: Complete project README.md file description.',
+      'Technical: Thoroughly check docker-compose.yml before final push.'
     ],
     tags: ['deadline', 'readme', 'docker'],
     importance: 'HIGH'
@@ -37,12 +37,12 @@ const INITIAL_ANNOUNCEMENTS: Announcement[] = [
     id: '2',
     sender: 'Judge David (Tech Lead)',
     platform: 'WHATSAPP',
-    timestamp: '35 phút trước',
+    timestamp: '35m ago',
     originalMessage: 'Hey teams, remember that our automated test scripts will scan your APIs on the server. Your Spring Boot controllers must use prefix /api/v1 and return valid JSON structures for all resource requests. Ensure that you have configured CORS correctly otherwise the frontend demo won\'t load.',
     aiSummary: [
-      'Endpoint Prefix: Các API Spring Boot phải sử dụng tiền tố /api/v1.',
-      'JSON Format: Dữ liệu trả về bắt buộc phải đúng định dạng JSON chuẩn.',
-      'Cấu hình CORS: Phải bật CORS để tránh việc frontend demo không thể load API.'
+      'Endpoint Prefix: Spring Boot APIs must use the /api/v1 prefix.',
+      'JSON Format: Responses must return valid, standard JSON structures.',
+      'CORS Configuration: CORS must be configured properly for the frontend demo to load.'
     ],
     tags: ['springboot', 'cors', 'api'],
     importance: 'MEDIUM'
@@ -51,12 +51,12 @@ const INITIAL_ANNOUNCEMENTS: Announcement[] = [
     id: '3',
     sender: 'Judge Jessica (Design Coach)',
     platform: 'DISCORD',
-    timestamp: '2 giờ trước',
+    timestamp: '2h ago',
     originalMessage: 'We will be holding a brief Q&A session today at 15:00 UTC on Discord voice channel. If you have questions about the submission criteria, or how the judges will evaluate the UI/UX design, drop by! It is optional but recommended.',
     aiSummary: [
-      'Q&A Session: Diễn ra vào lúc 15:00 UTC hôm nay tại kênh Voice Discord.',
-      'Nội dung: Giải đáp về tiêu chí nộp bài và tiêu chí đánh giá UI/UX.',
-      'Tham gia: Tự nguyện, nhưng khuyến khích các đội tham dự.'
+      'Q&A Session: Scheduled today at 15:00 UTC on the Discord voice channel.',
+      'Topic: Answering questions about submission criteria and UI/UX design guidelines.',
+      'Participation: Optional but highly recommended for all teams.'
     ],
     tags: ['qa', 'design', 'discord-voice'],
     importance: 'LOW'
@@ -239,13 +239,13 @@ export function DashboardDemo() {
             const generatedSummary: string[] = [];
             
             if (lines.length > 0) {
-              generatedSummary.push(`Nội dung chính: ${lines[0]}`);
+              generatedSummary.push(`Main content: ${lines[0]}`);
             }
             if (lines.length > 1) {
-              generatedSummary.push(`Chi tiết: ${lines[1]}`);
+              generatedSummary.push(`Detail: ${lines[1]}`);
             }
             if (simMessage.toLowerCase().includes('hạn') || simMessage.toLowerCase().includes('deadline') || simMessage.toLowerCase().includes('giờ')) {
-              generatedSummary.push(`Lưu ý về thời gian hoặc mốc deadline quy định.`);
+              generatedSummary.push(`Note on specific timing or deadline requirements.`);
             }
 
             const tags = ['simulated'];
@@ -280,9 +280,9 @@ export function DashboardDemo() {
         {/* Section Header */}
         <div className="dashboard-intro text-center">
           <span className="badge-live-pulse">REAL-TIME SIMULATION</span>
-          <h2>Trang Quản Lý Thông Báo BGK</h2>
+          <h2>Judges' Announcement Dashboard</h2>
           <p className="text-body text-muted">
-            Trải nghiệm khả năng tóm tắt thời gian thực. Sử dụng form giả lập bên dưới để gửi tin nhắn từ Discord/WhatsApp của Ban Giám Khảo và xem hệ thống hoạt động.
+            Experience real-time AI summarization. Use the simulation form below to send test announcements from Judges' Discord/WhatsApp and see it live.
           </p>
         </div>
 
@@ -292,28 +292,28 @@ export function DashboardDemo() {
             <div className="stat-card-icon discord-bg"><MessageSquare size={20} /></div>
             <div className="stat-card-data">
               <h4>{stats.discordCount}</h4>
-              <p className="text-small text-muted">Tin từ Discord</p>
+              <p className="text-small text-muted">Discord Announcements</p>
             </div>
           </div>
           <div className="card-default stat-board-card">
             <div className="stat-card-icon whatsapp-bg"><MessageSquare size={20} /></div>
             <div className="stat-card-data">
               <h4>{stats.whatsappCount}</h4>
-              <p className="text-small text-muted">Tin từ WhatsApp</p>
+              <p className="text-small text-muted">WhatsApp Announcements</p>
             </div>
           </div>
           <div className="card-default stat-board-card">
             <div className="stat-card-icon alert-bg"><ShieldAlert size={20} /></div>
             <div className="stat-card-data">
               <h4>{stats.high}</h4>
-              <p className="text-small text-muted">Khẩn Cấp (High)</p>
+              <p className="text-small text-muted">Emergency (High)</p>
             </div>
           </div>
           <div className="card-default stat-board-card">
             <div className="stat-card-icon token-bg"><Sparkles size={20} /></div>
             <div className="stat-card-data">
               <h4>~{stats.tokensSaved}</h4>
-              <p className="text-small text-muted">Từ tiết kiệm được (Words)</p>
+              <p className="text-small text-muted">Words Saved</p>
             </div>
           </div>
         </div>
@@ -329,7 +329,7 @@ export function DashboardDemo() {
                 <Search className="search-icon" size={18} />
                 <input 
                   type="text" 
-                  placeholder="Tìm theo người gửi, nội dung hoặc tag..." 
+                  placeholder="Search by sender, content, or tag..." 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="search-input"
@@ -339,13 +339,13 @@ export function DashboardDemo() {
               {/* Filtering Options */}
               <div className="filter-options-row">
                 <div className="filter-group">
-                  <span className="filter-label"><SlidersHorizontal size={14} /> Nền tảng:</span>
+                  <span className="filter-label"><SlidersHorizontal size={14} /> Platform:</span>
                   <div className="filter-buttons">
                     <button 
                       className={`filter-btn ${platformFilter === 'ALL' ? 'active' : ''}`}
                       onClick={() => setPlatformFilter('ALL')}
                     >
-                      Tất cả
+                      All
                     </button>
                     <button 
                       className={`filter-btn ${platformFilter === 'DISCORD' ? 'active' : ''}`}
@@ -363,31 +363,31 @@ export function DashboardDemo() {
                 </div>
 
                 <div className="filter-group">
-                  <span className="filter-label"><AlertCircle size={14} /> Độ quan trọng:</span>
+                  <span className="filter-label"><AlertCircle size={14} /> Importance:</span>
                   <div className="filter-buttons">
                     <button 
                       className={`filter-btn ${importanceFilter === 'ALL' ? 'active' : ''}`}
                       onClick={() => setImportanceFilter('ALL')}
                     >
-                      Tất cả
+                      All
                     </button>
                     <button 
                       className={`filter-btn ${importanceFilter === 'HIGH' ? 'active' : ''}`}
                       onClick={() => setImportanceFilter('HIGH')}
                     >
-                      Khẩn cấp
+                      High
                     </button>
                     <button 
                       className={`filter-btn ${importanceFilter === 'MEDIUM' ? 'active' : ''}`}
                       onClick={() => setImportanceFilter('MEDIUM')}
                     >
-                      Thường
+                      Medium
                     </button>
                     <button 
                       className={`filter-btn ${importanceFilter === 'LOW' ? 'active' : ''}`}
                       onClick={() => setImportanceFilter('LOW')}
                     >
-                      Thấp
+                      Low
                     </button>
                   </div>
                 </div>
@@ -398,7 +398,7 @@ export function DashboardDemo() {
             <div className="announcements-feed-list">
               {filteredAnnouncements.length === 0 ? (
                 <div className="card-default empty-state-card text-center">
-                  <p className="text-body text-muted">Không tìm thấy thông báo nào phù hợp bộ lọc.</p>
+                  <p className="text-body text-muted">No announcements found matching the active filters.</p>
                 </div>
               ) : (
                 filteredAnnouncements.map((item) => (
@@ -416,7 +416,7 @@ export function DashboardDemo() {
                       <div className="time-meta">
                         <span className="text-small text-muted">{item.timestamp}</span>
                         <span className={`importance-tag level-${item.importance.toLowerCase()}`}>
-                          {item.importance === 'HIGH' ? 'Khẩn cấp' : item.importance === 'MEDIUM' ? 'Bình thường' : 'Thấp'}
+                          {item.importance === 'HIGH' ? 'High' : item.importance === 'MEDIUM' ? 'Medium' : 'Low'}
                         </span>
                       </div>
                     </div>
@@ -425,7 +425,7 @@ export function DashboardDemo() {
                     <div className="ai-summary-highlight doodle-border">
                       <div className="summary-title">
                         <Sparkles size={16} className="spark-icon" />
-                        <span>AI Tóm Tắt Ý Chính:</span>
+                        <span>AI Key Takeaways:</span>
                       </div>
                       <ul className="summary-list">
                         {item.aiSummary.map((bullet, idx) => (
@@ -440,7 +440,7 @@ export function DashboardDemo() {
                         className="toggle-original-btn"
                         onClick={() => toggleExpand(item.id)}
                       >
-                        {expandedCards[item.id] ? ' ẩn tin nhắn gốc ▲' : ' xem tin nhắn gốc ▼'}
+                        {expandedCards[item.id] ? ' hide original message ▲' : ' view original message ▼'}
                       </button>
                       
                       {expandedCards[item.id] && (
@@ -467,8 +467,8 @@ export function DashboardDemo() {
           <div className="simulator-panel">
             <div className="card-default simulator-card">
               <div className="sim-header">
-                <h3>Bộ Giả Lập Webhook</h3>
-                <p className="text-small text-muted">Gửi tin nhắn raw giả lập từ các kênh chat của Ban giám khảo.</p>
+                <h3>Webhook Simulator</h3>
+                <p className="text-small text-muted">Simulate sending raw announcements from Judges' communication channels.</p>
               </div>
 
               {simStep > 0 && (
@@ -476,7 +476,7 @@ export function DashboardDemo() {
                   <div className="pipeline-steps">
                     <div className={`step-item ${simStep >= 1 ? 'active' : ''} ${simStep === 1 ? 'loading' : ''}`}>
                       <span className="step-num">{simStep > 1 ? '✓' : '1'}</span>
-                      <span className="step-txt">Nhận Webhook</span>
+                      <span className="step-txt">Webhook Ingestion</span>
                     </div>
                     <div className={`step-item ${simStep >= 2 ? 'active' : ''} ${simStep === 2 ? 'loading' : ''}`}>
                       <span className="step-num">{simStep > 2 ? '✓' : '2'}</span>
@@ -484,21 +484,21 @@ export function DashboardDemo() {
                     </div>
                     <div className={`step-item ${simStep >= 3 ? 'active' : ''} ${simStep === 3 ? 'loading' : ''}`}>
                       <span className="step-num">{simStep > 3 ? '✓' : '3'}</span>
-                      <span className="step-txt">AI Summarizer</span>
+                      <span className="step-txt">AI Processing</span>
                     </div>
                     <div className={`step-item ${simStep >= 4 ? 'active' : ''} ${simStep === 4 ? 'loading' : ''}`}>
                       <span className="step-num">{simStep > 4 ? '✓' : '4'}</span>
-                      <span className="step-txt">Broadcast Realtime</span>
+                      <span className="step-txt">Realtime Broadcast</span>
                     </div>
                   </div>
                   <div className="progress-bar-wrapper">
                     <div className="progress-bar-fill" style={{ width: `${(simStep / 4) * 100}%` }}></div>
                   </div>
                   <p className="pipeline-status-text">
-                    {simStep === 1 && "Đang gửi HTTP POST tới Spring Boot Webhook API..."}
-                    {simStep === 2 && "Spring Boot đang đẩy message vào RabbitMQ..."}
-                    {simStep === 3 && "RabbitMQ Consumer kích hoạt, đang gọi LLM để tóm tắt..."}
-                    {simStep === 4 && "Đã lưu DB, đang push websocket lên dashboard React..."}
+                    {simStep === 1 && "Sending HTTP POST payload to Spring Boot Webhook API..."}
+                    {simStep === 2 && "Spring Boot is queueing the message into RabbitMQ..."}
+                    {simStep === 3 && "RabbitMQ Consumer triggered, calling Qwen LLM for summarization..."}
+                    {simStep === 4 && "Saved to PostgreSQL, broadcasting via WebSocket stream to React UI..."}
                   </p>
                 </div>
               )}
@@ -506,7 +506,7 @@ export function DashboardDemo() {
               <form onSubmit={handleSimulate} className="sim-form">
                 <div className="form-group-flex">
                   <div className="form-field">
-                    <label className="field-label">Kênh gửi (Platform)</label>
+                    <label className="field-label">Platform Channel</label>
                     <select 
                       value={simPlatform}
                       onChange={(e) => setSimPlatform(e.target.value as 'DISCORD' | 'WHATSAPP')}
@@ -518,25 +518,25 @@ export function DashboardDemo() {
                     </select>
                   </div>
                   <div className="form-field">
-                    <label className="field-label">Mức độ khẩn</label>
+                    <label className="field-label">Importance Level</label>
                     <select 
                       value={simImportance}
                       onChange={(e) => setSimImportance(e.target.value as 'HIGH' | 'MEDIUM' | 'LOW')}
                       className="sim-select"
                       disabled={simStep > 0}
                     >
-                      <option value="HIGH">HIGH (Khẩn cấp)</option>
-                      <option value="MEDIUM">MEDIUM (Bình thường)</option>
-                      <option value="LOW">LOW (Thấp)</option>
+                      <option value="HIGH">HIGH (Emergency)</option>
+                      <option value="MEDIUM">MEDIUM (Normal)</option>
+                      <option value="LOW">LOW (Low)</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="form-field">
-                  <label className="field-label">Tên Giám Khảo (Sender)</label>
+                  <label className="field-label">Judge Name (Sender)</label>
                   <input 
                     type="text" 
-                    placeholder="VD: Judge David, BGK Minh..." 
+                    placeholder="e.g. Judge David, Chief Minh..." 
                     value={simSender}
                     onChange={(e) => setSimSender(e.target.value)}
                     className="sim-input"
@@ -546,9 +546,9 @@ export function DashboardDemo() {
                 </div>
 
                 <div className="form-field">
-                  <label className="field-label">Nội dung tin nhắn gốc (Original Long Message)</label>
+                  <label className="field-label">Original Announcement (Long Message)</label>
                   <textarea 
-                    placeholder="Nhập tin nhắn thông báo dài từ giám khảo..." 
+                    placeholder="Type a long official announcement from a judge..." 
                     value={simMessage}
                     onChange={(e) => setSimMessage(e.target.value)}
                     className="sim-textarea"
@@ -563,7 +563,7 @@ export function DashboardDemo() {
                   className="btn btn-sm btn-primary sim-submit-btn" 
                   disabled={simStep > 0 || !simSender.trim() || !simMessage.trim()}
                 >
-                  <Send size={16} /> Gửi webhook & tóm tắt
+                  <Send size={16} /> Send Webhook & Summarize
                 </button>
               </form>
             </div>
@@ -572,11 +572,10 @@ export function DashboardDemo() {
             <div className="card-default info-explain-card" style={{ marginTop: '16px' }}>
               <div className="info-header" style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
                 <BarChart2 size={18} style={{ color: 'var(--c-warning)' }} />
-                <h4 style={{ margin: 0, fontSize: '14px' }}>Nguyên Lý Kiến Trúc</h4>
+                <h4 style={{ margin: 0, fontSize: '14px' }}>Architecture Pattern</h4>
               </div>
               <p className="text-small" style={{ margin: 0, lineHeight: 1.5, fontSize: '12px' }}>
-                Trong ứng dụng thực tế, Spring Boot nhận webhook từ Discord/WhatsApp, lưu vào hàng đợi RabbitMQ, sau đó trả về <code>200 OK</code> trong <strong>&lt; 50ms</strong>. 
-                Tiếp đó, background thread tiêu thụ hàng đợi để gửi message sang AI Engine, lưu dữ liệu cấu trúc vào Postgres, rồi kích hoạt client browser cập nhật UI thông qua WebSocket connection.
+                In production, Spring Boot receives webhooks from Discord/WhatsApp, writes to PostgreSQL, queues them to RabbitMQ, and returns 200 OK in &lt; 50ms. An async background worker consumes the queue, calls Qwen LLM API for summarization, stores the summary, and broadcasts the live update to the React UI via WebSocket.
               </p>
             </div>
           </div>
