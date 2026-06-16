@@ -96,6 +96,9 @@ public class AISummarizerService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + qwenApiKey);
+        headers.set("HTTP-Referer", "https://tardis-hazel.vercel.app");
+        headers.set("X-Title", "Tardis Aggregator");
+        headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 
         StringBuilder contentBuilder = new StringBuilder("Các thông báo cần tóm tắt:\n");
         for (int i = 0; i < messages.size(); i++) {
