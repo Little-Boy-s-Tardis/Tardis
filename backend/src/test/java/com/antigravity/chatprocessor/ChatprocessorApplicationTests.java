@@ -8,11 +8,10 @@ import com.antigravity.chatprocessor.repository.AggregatedSummaryRepository;
 import com.antigravity.chatprocessor.repository.RawWebhookMessageRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-@SpringBootTest(properties = {
-    "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration," +
-    "org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration," +
-    "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration"
-})
+import org.springframework.test.context.ActiveProfiles;
+
+@SpringBootTest
+@ActiveProfiles("dev")
 class ChatprocessorApplicationTests {
 
     @MockitoBean

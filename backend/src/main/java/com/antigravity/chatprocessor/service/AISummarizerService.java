@@ -100,7 +100,7 @@ public class AISummarizerService {
         headers.set("X-Title", "Tardis Aggregator");
         headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 
-        StringBuilder contentBuilder = new StringBuilder("Các thông báo cần tóm tắt:\n");
+        StringBuilder contentBuilder = new StringBuilder("Announcements to summarize:\n");
         for (int i = 0; i < messages.size(); i++) {
             ChatMessageDto msg = messages.get(i);
             contentBuilder.append(String.format("%d. [%s] %s: %s\n", 
@@ -152,7 +152,7 @@ public class AISummarizerService {
             String contentLower = content.toLowerCase();
             String sender = msg.getSender();
 
-            if (contentLower.contains("deadline") || contentLower.contains("hạn nộp") || contentLower.contains("hạn chót") || contentLower.contains("dời") || contentLower.contains("postponed")) {
+            if (contentLower.contains("deadline") || contentLower.contains("postponed") || contentLower.contains("postpone") || contentLower.contains("extend") || contentLower.contains("extension")) {
                 bullets.add(String.format("Deadline Extension: Announcement from %s regarding timeline: \"%s\"", sender, extractKeySentence(content)));
             } else if (contentLower.contains("docker") || contentLower.contains("api") || contentLower.contains("port") || contentLower.contains("db") || contentLower.contains("cors")) {
                 bullets.add(String.format("Technical Requirement: %s reminded about configuration: \"%s\"", sender, extractKeySentence(content)));
@@ -246,11 +246,11 @@ public class AISummarizerService {
             boolean hasHigh = false;
             for (ChatMessageDto msg : originals) {
                 String content = msg.getContent().toLowerCase();
-                if (content.contains("hạn chót") || content.contains("deadline") || content.contains("khẩn cấp") || content.contains("dời") || content.contains("urgent") || content.contains("emergency") || content.contains("critical")) {
+                if (content.contains("deadline") || content.contains("urgent") || content.contains("emergency") || content.contains("critical")) {
                     hasHigh = true;
                 }
-                if (content.contains("deadline") || content.contains("hạn")) tags.add("deadline");
-                if (content.contains("rules") || content.contains("luật") || content.contains("thể lệ")) tags.add("rules");
+                if (content.contains("deadline")) tags.add("deadline");
+                if (content.contains("rules") || content.contains("rule") || content.contains("guideline")) tags.add("rules");
                 if (content.contains("docker") || content.contains("compose")) tags.add("docker");
                 if (content.contains("api") || content.contains("spring")) tags.add("backend");
                 if (content.contains("ui") || content.contains("ux")) tags.add("frontend");

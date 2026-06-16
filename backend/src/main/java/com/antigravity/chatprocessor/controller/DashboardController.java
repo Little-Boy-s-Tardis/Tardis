@@ -66,11 +66,11 @@ public class DashboardController {
             map.put("originalMessage", combinedContent.toString());
 
             // Heuristics for sender name, platform and importance
-            String sender = "Ban Giám Khảo (Tổng hợp)";
+            String sender = "Judges (Aggregated)";
             String platform = "DISCORD"; // Default fallback
             String importance = "MEDIUM";
             Set<String> tags = new HashSet<>();
-            tags.add("tóm-tắt");
+            tags.add("summary");
 
             if (!originals.isEmpty()) {
                 if (originals.size() == 1) {
@@ -85,7 +85,7 @@ public class DashboardController {
                     if (originals.size() > 2) {
                         senders.append(" +").append(originals.size() - 2);
                     }
-                    sender = "BGK: " + senders.toString();
+                    sender = "Judges: " + senders.toString();
                     
                     // If multiple platforms, flag as both
                     boolean hasDiscord = originals.stream().anyMatch(m -> "DISCORD".equalsIgnoreCase(m.getPlatform()));
@@ -101,13 +101,13 @@ public class DashboardController {
                 boolean hasHigh = false;
                 for (RawWebhookMessage msg : originals) {
                     String content = msg.getContent().toLowerCase();
-                    if (content.contains("hạn chót") || content.contains("deadline") || content.contains("khẩn cấp") || content.contains("dời") || content.contains("urgent")) {
+                    if (content.contains("deadline") || content.contains("urgent") || content.contains("emergency") || content.contains("critical")) {
                         hasHigh = true;
                     }
                     
                     // Basic tag mining
-                    if (content.contains("deadline") || content.contains("hạn")) tags.add("deadline");
-                    if (content.contains("luật") || content.contains("thể lệ")) tags.add("thể-lệ");
+                    if (content.contains("deadline")) tags.add("deadline");
+                    if (content.contains("rules") || content.contains("rule") || content.contains("guideline")) tags.add("rules");
                     if (content.contains("docker") || content.contains("compose")) tags.add("docker");
                     if (content.contains("api") || content.contains("spring")) tags.add("backend");
                     if (content.contains("ui") || content.contains("ux")) tags.add("frontend");
@@ -126,5 +126,11 @@ public class DashboardController {
         }
 
         return response;
+    }
+
+    @org.springframework.web.bind.annotation.DeleteMapping
+    public void clearAnnouncements() {
+        aggregatedSummaryRepository.deleteAll();
+        rawWebhookMessageRepository.deleteAll();
     }
 }

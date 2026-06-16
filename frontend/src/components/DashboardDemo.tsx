@@ -18,53 +18,8 @@ const WS_URL = import.meta.env.VITE_WS_URL || (API_BASE_URL.startsWith('https')
   ? `wss://${API_BASE_URL.replace(/^https?:\/\//, '')}/ws`
   : `ws://${API_BASE_URL.replace(/^https?:\/\//, '')}/ws`);
 
-const INITIAL_ANNOUNCEMENTS: Announcement[] = [
-  {
-    id: '1',
-    sender: 'Judge Minh (Chief)',
-    platform: 'DISCORD',
-    timestamp: '10m ago',
-    originalMessage: '@everyone Important Note: I notice many teams have not finalized their project README.md. The judges decided to extend the submission deadline by 24 hours. The new deadline is 22:00 tomorrow June 18th. After this time, the portal will close automatically and no excuses will be accepted. Double-check your docker-compose before pushing.',
-    aiSummary: [
-      'New Deadline: Extended by 24 hours, new deadline is 22:00 tomorrow June 18th.',
-      'Requirement: Complete project README.md file description.',
-      'Technical: Thoroughly check docker-compose.yml before final push.'
-    ],
-    tags: ['deadline', 'readme', 'docker'],
-    importance: 'HIGH'
-  },
-  {
-    id: '2',
-    sender: 'Judge David (Tech Lead)',
-    platform: 'WHATSAPP',
-    timestamp: '35m ago',
-    originalMessage: 'Hey teams, remember that our automated test scripts will scan your APIs on the server. Your Spring Boot controllers must use prefix /api/v1 and return valid JSON structures for all resource requests. Ensure that you have configured CORS correctly otherwise the frontend demo won\'t load.',
-    aiSummary: [
-      'Endpoint Prefix: Spring Boot APIs must use the /api/v1 prefix.',
-      'JSON Format: Responses must return valid, standard JSON structures.',
-      'CORS Configuration: CORS must be configured properly for the frontend demo to load.'
-    ],
-    tags: ['springboot', 'cors', 'api'],
-    importance: 'MEDIUM'
-  },
-  {
-    id: '3',
-    sender: 'Judge Jessica (Design Coach)',
-    platform: 'DISCORD',
-    timestamp: '2h ago',
-    originalMessage: 'We will be holding a brief Q&A session today at 15:00 UTC on Discord voice channel. If you have questions about the submission criteria, or how the judges will evaluate the UI/UX design, drop by! It is optional but recommended.',
-    aiSummary: [
-      'Q&A Session: Scheduled today at 15:00 UTC on the Discord voice channel.',
-      'Topic: Answering questions about submission criteria and UI/UX design guidelines.',
-      'Participation: Optional but highly recommended for all teams.'
-    ],
-    tags: ['qa', 'design', 'discord-voice'],
-    importance: 'LOW'
-  }
-];
-
 export function DashboardDemo() {
-  const [announcements, setAnnouncements] = useState<Announcement[]>(INITIAL_ANNOUNCEMENTS);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [search, setSearch] = useState('');
   const [platformFilter, setPlatformFilter] = useState<'ALL' | 'DISCORD' | 'WHATSAPP'>('ALL');
   const [importanceFilter, setImportanceFilter] = useState<'ALL' | 'HIGH' | 'MEDIUM' | 'LOW'>('ALL');
@@ -222,7 +177,7 @@ export function DashboardDemo() {
           }, 1500);
         }, 1000);
       } else {
-        alert("Gửi webhook thất bại! Vui lòng kiểm tra trạng thái Backend (Spring Boot).");
+        alert("Failed to send webhook! Please check the Backend status (Spring Boot).");
         setSimStep(0);
       }
     })
@@ -244,19 +199,19 @@ export function DashboardDemo() {
             if (lines.length > 1) {
               generatedSummary.push(`Detail: ${lines[1]}`);
             }
-            if (simMessage.toLowerCase().includes('hạn') || simMessage.toLowerCase().includes('deadline') || simMessage.toLowerCase().includes('giờ')) {
+            if (simMessage.toLowerCase().includes('deadline') || simMessage.toLowerCase().includes('time') || simMessage.toLowerCase().includes('hour') || simMessage.toLowerCase().includes('limit')) {
               generatedSummary.push(`Note on specific timing or deadline requirements.`);
             }
 
             const tags = ['simulated'];
-            if (simMessage.toLowerCase().includes('deadline') || simMessage.toLowerCase().includes('hạn')) tags.push('deadline');
+            if (simMessage.toLowerCase().includes('deadline')) tags.push('deadline');
             if (simMessage.toLowerCase().includes('code') || simMessage.toLowerCase().includes('api')) tags.push('technical');
 
             const newAnnouncement: Announcement = {
               id: Date.now().toString(),
               sender: simSender,
               platform: simPlatform,
-              timestamp: 'Vừa xong',
+              timestamp: 'Just now',
               originalMessage: simMessage,
               aiSummary: generatedSummary,
               tags: tags,
