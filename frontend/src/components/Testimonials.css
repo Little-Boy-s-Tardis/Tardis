@@ -1,0 +1,59 @@
+.testimonials-section {
+  padding-top: var(--s-6);
+  border-bottom: 2px solid var(--c-border);
+  background-color: var(--c-white); /* To contrast the bg soft from previous section */
+}
+
+.testimonials-header {
+  max-width: 800px;
+  margin: 0 auto var(--s-6);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--s-4);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.testimonial-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.testimonial-card:hover {
+  /* Using standard card hover from global css, 
+     but overriding rotate to simulate playful feeling */
+  transform: translateY(-4px) rotate(0deg) !important;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--c-charcoal);
+  background-color: var(--c-primary);
+}
+
+.author-name {
+  margin-bottom: 0;
+  font-size: 16px;
+}
+
+.author-handle {
+  font-size: 14px;
+}
+
+.testimonial-text {
+  font-size: 16px;
+  line-height: 1.6;
+  font-style: italic;
+}

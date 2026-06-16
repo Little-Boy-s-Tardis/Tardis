@@ -1,0 +1,129 @@
+.hero-section {
+  padding: var(--s-8) 0 var(--s-6);
+  border-bottom: 2px solid var(--c-border);
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin-bottom: var(--s-6);
+}
+
+.hero-subtitle {
+  margin: 0 auto var(--s-4);
+  max-width: 600px;
+}
+
+.hero-cta-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.hero-visual {
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: var(--s-8);
+}
+
+/* Specific doodle box for hero */
+.browser-window {
+  border-radius: 12px;
+  transform: rotate(-1deg);
+}
+
+.browser-body {
+  background-color: var(--c-bg-soft);
+  padding: var(--s-8);
+  display: flex;
+  justify-content: center;
+  min-height: 350px;
+}
+
+.newsletter-mockup {
+  background-color: var(--c-white);
+  padding: var(--s-6);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.newsletter-mockup h3 {
+  margin-bottom: 0;
+}
+
+.circle-avatar {
+  width: 64px;
+  height: 64px;
+  background-color: var(--c-primary);
+  border: 3px solid var(--c-charcoal);
+  border-radius: 50%;
+}
+
+.mockup-line {
+  width: 80%;
+  height: 12px;
+  background-color: var(--c-bg-light);
+  border-radius: 6px;
+  margin-bottom: var(--s-2);
+}
+
+.mockup-input, .mockup-btn {
+  height: 48px;
+  width: 100%;
+  background-color: var(--c-bg-light);
+}
+
+.mockup-btn {
+  background-color: var(--c-primary);
+  opacity: 0.8;
+}
+
+.trusted-by {
+  width: 100%;
+  text-align: center;
+}
+
+.trusted-by p {
+  color: var(--c-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--s-3);
+}
+
+.brands-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-6);
+}
+
+.brand-logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--c-slate);
+  opacity: 0.6;
+}
+
+@media (max-width: 640px) {
+  .hero-cta-group {
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+  .hero-cta-group .btn {
+    width: 100%;
+  }
+}

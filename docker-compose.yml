@@ -3,9 +3,9 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: antigravity-postgres
+    container_name: postgres
     environment:
-      - POSTGRES_DB=antigravity
+      - POSTGRES_DB=tardis
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     ports:
@@ -15,7 +15,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
-    container_name: antigravity-rabbitmq
+    container_name: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"

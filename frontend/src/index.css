@@ -1,0 +1,247 @@
+:root {
+  /* Primary & Accent Colors */
+  --c-primary: #EACDC2;
+  --c-taupe: #D9B6A8;
+  --c-success: #2D8F54;
+  --c-warning: #C07E1F;
+  --c-error: #E25858;
+
+  /* Interactive & Neutrals */
+  --c-charcoal: #111827;
+  --c-slate: #1F2937;
+  --c-white: #FFFFFF;
+  --c-bg-soft: #F9F6F0;
+  --c-bg-light: #EFEBE1;
+  --c-text-muted: #6B7280;
+  --c-border: #E6E0D4;
+  --c-divider: #D9D2C4;
+
+  /* Semantic/Status */
+  --c-error-dark: #C93C3C;
+  --c-warning-amber: #E09E38;
+  --c-success-light: #F0FDF8;
+
+  /* Spacing (8px grid) */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 40px;
+  --s-6: 48px;
+  --s-8: 64px;
+
+  /* Border Radii */
+  --br-sm: 8px;
+  --br-md: 12px;
+  --br-lg: 16px;
+  --br-xl: 20px;
+  --br-btn: 255px 15px 225px / 15px 225px 15px 255px;
+
+  /* Shadows */
+  --shadow-sm: 3px 4px 0px 0px var(--c-charcoal);
+  --shadow-md: 4px 5px 0px 0px var(--c-charcoal);
+  --shadow-lg: 6px 7px 0px 0px var(--c-charcoal);
+  --shadow-xl: 5px 6px 0px 0px var(--c-charcoal);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--c-bg-soft);
+  color: var(--c-slate);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--c-charcoal);
+  font-weight: 600;
+  margin-bottom: var(--s-2);
+}
+
+h1, .text-display {
+  font-size: 56px;
+  line-height: 61.6px;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 40px;
+  line-height: 60px;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 24px;
+  line-height: 36px;
+}
+
+p, .text-body {
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+.text-small {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.text-muted {
+  color: var(--c-text-muted);
+}
+
+.text-center { text-align: center; }
+
+/* Layout Utilities */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--s-4);
+}
+
+.section-gap {
+  margin-bottom: var(--s-6);
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 var(--s-2); }
+  h1, .text-display { font-size: 40px; line-height: 48px; }
+  h2 { font-size: 32px; line-height: 40px; }
+}
+
+/* Button Component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: var(--br-btn);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+  gap: var(--s-1);
+}
+
+.btn-lg {
+  font-size: 20px;
+  padding: 12px 24px;
+  height: 60px;
+  line-height: 30px;
+}
+
+.btn-sm {
+  font-size: 16px;
+  padding: 12px 24px;
+  height: 54px;
+  line-height: 24px;
+}
+
+.btn-primary {
+  background-color: var(--c-primary);
+  color: var(--c-slate);
+  border: 3px solid var(--c-charcoal);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 2px 3px 0px 0px var(--c-charcoal);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--c-slate);
+  border: 3px solid transparent;
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.btn-outline {
+  background-color: var(--c-white);
+  color: var(--c-slate);
+  border: 3px solid var(--c-charcoal);
+  box-shadow: none;
+}
+
+.btn-outline:hover {
+  background-color: var(--c-bg-soft);
+  box-shadow: 2px 3px 0px 0px var(--c-charcoal);
+}
+
+/* Link Component */
+.link-bold {
+  color: var(--c-slate);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link-bold:hover {
+  color: var(--c-text-muted);
+  text-decoration: underline;
+}
+
+/* Utility for hand-drawn border */
+.doodle-border {
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  border: 3px solid var(--c-charcoal);
+}
+
+/* Card Component */
+.card-default {
+  background-color: var(--c-white);
+  border: 3px solid var(--c-charcoal);
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  padding: var(--s-3);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-default:hover {
+  transform: translateY(-2px) rotate(0deg) !important;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Doodle Container (placeholder style) */
+.doodle-box {
+  background-color: var(--c-white);
+  border: 3px solid var(--c-charcoal);
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+/* Header style for doodle boxes */
+.doodle-header {
+  border-bottom: 3px solid var(--c-charcoal);
+  padding: var(--s-1) var(--s-2);
+  display: flex;
+  gap: var(--s-1);
+  background-color: var(--c-white);
+}
+
+.doodle-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--c-charcoal);
+}
