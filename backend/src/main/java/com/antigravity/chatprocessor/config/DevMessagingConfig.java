@@ -2,7 +2,6 @@ package com.antigravity.chatprocessor.config;
 
 import com.antigravity.chatprocessor.dto.ChatMessageDto;
 import com.antigravity.chatprocessor.service.MessageConsumer;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -14,10 +13,11 @@ import org.springframework.context.annotation.Profile;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.CompletableFuture;
 
-@Slf4j
 @Profile("dev")
 @Configuration
 public class DevMessagingConfig {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DevMessagingConfig.class);
 
     private final MessageConsumer messageConsumer;
 

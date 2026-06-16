@@ -6,9 +6,9 @@ spring:
     name: chatprocessor
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/tardis
-    username: postgres
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tardis}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -20,24 +20,24 @@ spring:
         format_sql: true
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
 
 # Application Custom Properties
 app:
   webhook:
-    verify-token: "antigravity-secret-verify-token"
+    verify-token: ${APP_WEBHOOK_VERIFY_TOKEN:antigravity-secret-verify-token}
   rabbitmq:
-    queue-name: "chat.messages.queue"
-    exchange-name: "chat.messages.exchange"
-    routing-key: "chat.message.routingKey"
+    queue-name: ${APP_RABBITMQ_QUEUE_NAME:chat.messages.queue}
+    exchange-name: ${APP_RABBITMQ_EXCHANGE_NAME:chat.messages.exchange}
+    routing-key: ${APP_RABBITMQ_ROUTING_KEY:chat.message.routingKey}
   batch:
-    max-delay-minutes: 1
-    silence-delay-seconds: 5
-    thread-pool-size: 4
+    max-delay-minutes: ${APP_BATCH_MAX_DELAY_MINUTES:1}
+    silence-delay-seconds: ${APP_BATCH_SILENCE_DELAY_SECONDS:5}
+    thread-pool-size: ${APP_BATCH_THREAD_POOL_SIZE:4}
   qwen:
-    api-key: ""
-    url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
-    model: "qwen-turbo"
+    api-key: ${APP_QWEN_API_KEY:}
+    url: ${APP_QWEN_URL:https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions}
+    model: ${APP_QWEN_MODEL:qwen-turbo}

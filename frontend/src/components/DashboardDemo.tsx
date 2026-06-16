@@ -13,6 +13,11 @@ interface Announcement {
   importance: 'HIGH' | 'MEDIUM' | 'LOW';
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const WS_URL = import.meta.env.VITE_WS_URL || (API_BASE_URL.startsWith('https') 
+  ? `wss://${API_BASE_URL.replace(/^https?:\/\//, '')}/ws`
+  : `ws://${API_BASE_URL.replace(/^https?:\/\//, '')}/ws`);
+
 const INITIAL_ANNOUNCEMENTS: Announcement[] = [
   {
     id: '1',
@@ -80,7 +85,7 @@ export function DashboardDemo() {
 
   useEffect(() => {
     // 1. Fetch historical announcements
-    fetch('http://localhost:8080/api/v1/announcements')
+    fetch(`${API_BASE_URL}/api/v1/announcements`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
@@ -95,7 +100,7 @@ export function DashboardDemo() {
 
     const connectWebSocket = () => {
       console.log("Connecting to WebSocket stomp endpoint...");
-      ws = new WebSocket("ws://localhost:8080/ws");
+      ws = new WebSocket(WS_URL);
 
       ws.onopen = () => {
         console.log("WebSocket open. Connecting STOMP...");
@@ -187,8 +192,8 @@ export function DashboardDemo() {
     };
 
     const endpoint = simPlatform === 'DISCORD' 
-      ? 'http://localhost:8080/api/v1/webhooks/discord' 
-      : 'http://localhost:8080/api/v1/webhooks/whatsapp';
+      ? `${API_BASE_URL}/api/v1/webhooks/discord` 
+      : `${API_BASE_URL}/api/v1/webhooks/whatsapp`;
 
     fetch(endpoint, {
       method: 'POST',
