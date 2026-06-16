@@ -6,7 +6,7 @@ spring:
     name: chatprocessor
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/antigravity
+    url: jdbc:postgresql://localhost:5432/tardis
     username: postgres
     password: password
     driver-class-name: org.postgresql.Driver
@@ -34,6 +34,10 @@ app:
     exchange-name: "chat.messages.exchange"
     routing-key: "chat.message.routingKey"
   batch:
-    max-delay-minutes: 5
-    silence-delay-seconds: 60
+    max-delay-minutes: 1
+    silence-delay-seconds: 5
     thread-pool-size: 4
+  qwen:
+    api-key: ""
+    url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+    model: "qwen-turbo"

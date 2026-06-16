@@ -1,25 +1,17 @@
 import { Nav } from './components/Nav';
-import { Hero } from './components/Hero';
-import { Stats } from './components/Stats';
-import { Features } from './components/Features';
-import { BuilderPreview } from './components/BuilderPreview';
-import { Testimonials } from './components/Testimonials';
-import { FooterCTA } from './components/FooterCTA';
+import { DashboardDemo } from './components/DashboardDemo';
 
 function App() {
   return (
     <div className="app-wrapper">
       <Nav />
       <main>
-        <Hero />
-        <Stats />
-        <Features />
-        <BuilderPreview />
-        <Testimonials />
-        <FooterCTA />
+        <DashboardDemo />
       </main>
     </div>
   );
 }
 
 export default App;
+
+

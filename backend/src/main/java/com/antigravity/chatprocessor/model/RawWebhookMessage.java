@@ -1,27 +1,46 @@
-package com.antigravity.chatprocessor.dto;
+package com.antigravity.chatprocessor.model;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
 import java.time.Instant;
 
-public class ChatMessageDto implements Serializable {
-    private static final long serialVersionUID = 1L;
+@Entity
+@Table(name = "raw_webhook_messages", indexes = {
+    @Index(name = "idx_message_hash", columnList = "messageHash")
+})
+public class RawWebhookMessage {
 
+    @Id
+    @Column(length = 36)
     private String id;
+
+    @Column(nullable = false)
     private String sender;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @Column(nullable = false, length = 20)
     private String platform; // DISCORD, WHATSAPP
+
+    @Column(name = "conversation_id")
     private String conversationId;
+
+    @Column(nullable = false)
     private Instant timestamp;
 
-    public ChatMessageDto() {}
+    @Column(name = "message_hash", nullable = false, length = 64)
+    private String messageHash;
 
-    public ChatMessageDto(String id, String sender, String content, String platform, String conversationId, Instant timestamp) {
+    public RawWebhookMessage() {}
+
+    public RawWebhookMessage(String id, String sender, String content, String platform, String conversationId, Instant timestamp, String messageHash) {
         this.id = id;
         this.sender = sender;
         this.content = content;
         this.platform = platform;
         this.conversationId = conversationId;
         this.timestamp = timestamp;
+        this.messageHash = messageHash;
     }
 
     public String getId() { return id; }
@@ -42,6 +61,9 @@ public class ChatMessageDto implements Serializable {
     public Instant getTimestamp() { return timestamp; }
     public void setTimestamp(Instant timestamp) { this.timestamp = timestamp; }
 
+    public String getMessageHash() { return messageHash; }
+    public void setMessageHash(String messageHash) { this.messageHash = messageHash; }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -53,6 +75,7 @@ public class ChatMessageDto implements Serializable {
         private String platform;
         private String conversationId;
         private Instant timestamp;
+        private String messageHash;
 
         public Builder id(String id) { this.id = id; return this; }
         public Builder sender(String sender) { this.sender = sender; return this; }
@@ -60,9 +83,10 @@ public class ChatMessageDto implements Serializable {
         public Builder platform(String platform) { this.platform = platform; return this; }
         public Builder conversationId(String conversationId) { this.conversationId = conversationId; return this; }
         public Builder timestamp(Instant timestamp) { this.timestamp = timestamp; return this; }
+        public Builder messageHash(String messageHash) { this.messageHash = messageHash; return this; }
 
-        public ChatMessageDto build() {
-            return new ChatMessageDto(id, sender, content, platform, conversationId, timestamp);
+        public RawWebhookMessage build() {
+            return new RawWebhookMessage(id, sender, content, platform, conversationId, timestamp, messageHash);
         }
     }
 }

@@ -1,17 +1,19 @@
 package com.antigravity.chatprocessor.service;
 
 import com.antigravity.chatprocessor.dto.ChatMessageDto;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class MessageConsumer {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MessageConsumer.class);
+
     private final ChatBatcherService chatBatcherService;
+
+    public MessageConsumer(ChatBatcherService chatBatcherService) {
+        this.chatBatcherService = chatBatcherService;
+    }
 
     @RabbitListener(queues = "${app.rabbitmq.queue-name}")
     public void consumeMessage(ChatMessageDto message) {

@@ -5,22 +5,20 @@ export function Nav() {
     <nav className="primary-nav">
       <div className="nav-container">
         <div className="nav-brand">
-          <span className="brand-icon">P</span>
-          <span className="brand-text">Perspective</span>
+          <span className="brand-icon">T</span>
+          <span className="brand-text">Tardis</span>
+          <span className="brand-subtext text-muted text-small" style={{ fontSize: '12px', marginLeft: '4px' }}>BGK Aggregator</span>
         </div>
         
         <div className="nav-links">
-          <a href="#" className="nav-link">Product</a>
-          <a href="#" className="nav-link">Templates</a>
-          <a href="#" className="nav-link">Pricing</a>
-          <a href="#" className="nav-link">Resources</a>
-        </div>
-
-        <div className="nav-actions">
-          <a href="#" className="nav-link">Log In</a>
-          <button className="btn btn-sm btn-primary">Start Free Trial</button>
+          <div className="live-status-indicator">
+            <span className="pulse-dot"></span>
+            <span className="status-text text-small">Real-time Webhook Stream Active</span>
+          </div>
         </div>
       </div>
     </nav>
   );
 }
+
+

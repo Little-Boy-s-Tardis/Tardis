@@ -1,26 +1,267 @@
 package com.antigravity.chatprocessor.service;
 
 import com.antigravity.chatprocessor.dto.ChatMessageDto;
-import lombok.extern.slf4j.Slf4j;
+import com.antigravity.chatprocessor.model.AggregatedSummary;
+import com.antigravity.chatprocessor.repository.AggregatedSummaryRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class AISummarizerService {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AISummarizerService.class);
+
+    private final AggregatedSummaryRepository aggregatedSummaryRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public AISummarizerService(AggregatedSummaryRepository aggregatedSummaryRepository, SimpMessagingTemplate messagingTemplate) {
+        this.aggregatedSummaryRepository = aggregatedSummaryRepository;
+        this.messagingTemplate = messagingTemplate;
+    }
+
+    @Value("${app.qwen.api-key:}")
+    private String qwenApiKey;
+
+    @Value("${app.qwen.url}")
+    private String qwenUrl;
+
+    @Value("${app.qwen.model}")
+    private String qwenModel;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public void summarizeBatch(String conversationId, List<ChatMessageDto> messages) {
         log.info("AISummarizerService received batch for conversationId: {} with {} messages", 
                 conversationId, messages.size());
-        
-        for (ChatMessageDto msg : messages) {
-            log.debug("Message in batch: [{}] {}: {}", msg.getPlatform(), msg.getSender(), msg.getContent());
+
+        if (messages == null || messages.isEmpty()) {
+            return;
         }
 
-        // TODO: Call LLM API (OpenAI/Gemini/Claude)
-        // TODO: Save messages and summary to PostgreSQL database
-        // TODO: Push to WebSocket dashboard
-        log.info("Successfully processed and stubbed batch summarization for conversationId: {}", conversationId);
+        String summaryText = "";
+
+        // Attempt calling Qwen API if API key is provided
+        if (qwenApiKey != null && !qwenApiKey.trim().isEmpty()) {
+            try {
+                summaryText = callQwenAPI(messages);
+            } catch (Exception e) {
+                log.error("Failed to generate summary with Qwen API. Falling back to local smart summarizer.", e);
+                summaryText = generateSmartFallbackSummary(messages);
+            }
+        } else {
+            log.info("Qwen API key is empty. Using smart local summarizer.");
+            summaryText = generateSmartFallbackSummary(messages);
+        }
+
+        // Generate summary ID and comma-separated original message IDs
+        String summaryId = UUID.randomUUID().toString();
+        String originalIds = messages.stream()
+                .map(ChatMessageDto::getId)
+                .collect(Collectors.joining(","));
+
+        // Save to Database
+        AggregatedSummary aggregatedSummary = AggregatedSummary.builder()
+                .id(summaryId)
+                .conversationId(conversationId)
+                .summaryText(summaryText)
+                .timestamp(Instant.now())
+                .originalMessageIds(originalIds)
+                .build();
+
+        try {
+            aggregatedSummaryRepository.save(aggregatedSummary);
+            log.info("Successfully persisted AggregatedSummary ID: {}", summaryId);
+        } catch (Exception e) {
+            log.error("Failed to persist summary in PostgreSQL", e);
+        }
+
+        // Broadcast to WebSocket clients
+        Map<String, Object> wsResponse = buildWebSocketPayload(aggregatedSummary, messages);
+        try {
+            messagingTemplate.convertAndSend("/topic/announcements", wsResponse);
+            log.info("Successfully broadcasted summary via WebSockets to /topic/announcements");
+        } catch (Exception e) {
+            log.error("Failed to broadcast WebSocket announcement", e);
+        }
+    }
+
+    private String callQwenAPI(List<ChatMessageDto> messages) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + qwenApiKey);
+
+        StringBuilder contentBuilder = new StringBuilder("Các thông báo cần tóm tắt:\n");
+        for (int i = 0; i < messages.size(); i++) {
+            ChatMessageDto msg = messages.get(i);
+            contentBuilder.append(String.format("%d. [%s] %s: %s\n", 
+                    i + 1, msg.getPlatform(), msg.getSender(), msg.getContent()));
+        }
+
+        // Build request body for OpenAI-compatible Qwen API
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("model", qwenModel);
+        
+        List<Map<String, String>> chatMessages = new ArrayList<>();
+        
+        Map<String, String> systemMsg = new HashMap<>();
+        systemMsg.put("role", "system");
+        systemMsg.put("content", "Bạn là một AI quản lý cuộc thi. Hãy gom nhóm, tóm tắt danh sách các thông báo sau từ giám khảo dưới dạng danh sách các gạch đầu dòng ngắn gọn, súc tích bằng tiếng Việt. Tập trung vào: Hạn chót (deadline), Yêu cầu kỹ thuật và Các lưu ý quan trọng. Không sử dụng ký tự emoji ở đầu gạch đầu dòng.");
+        chatMessages.add(systemMsg);
+
+        Map<String, String> userMsg = new HashMap<>();
+        userMsg.put("role", "user");
+        userMsg.put("content", contentBuilder.toString());
+        chatMessages.add(userMsg);
+
+        requestBody.put("messages", chatMessages);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+        
+        log.debug("Sending request to Qwen API: {}", qwenUrl);
+        ResponseEntity<Map> response = restTemplate.postForEntity(qwenUrl, entity, Map.class);
+        
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            Map body = response.getBody();
+            List choices = (List) body.get("choices");
+            if (choices != null && !choices.isEmpty()) {
+                Map choice = (Map) choices.get(0);
+                Map message = (Map) choice.get("message");
+                if (message != null && message.get("content") != null) {
+                    return (String) message.get("content");
+                }
+            }
+        }
+        throw new RuntimeException("Unexpected response from Qwen API");
+    }
+
+    private String generateSmartFallbackSummary(List<ChatMessageDto> messages) {
+        List<String> bullets = new ArrayList<>();
+        
+        for (ChatMessageDto msg : messages) {
+            String content = msg.getContent();
+            String contentLower = content.toLowerCase();
+            String sender = msg.getSender();
+
+            if (contentLower.contains("deadline") || contentLower.contains("hạn nộp") || contentLower.contains("hạn chót") || contentLower.contains("dời")) {
+                bullets.add(String.format("Gia hạn/Hạn chót: Thông báo từ %s liên quan đến thời hạn: \"%s\"", sender, extractKeySentence(content)));
+            } else if (contentLower.contains("docker") || contentLower.contains("api") || contentLower.contains("port") || contentLower.contains("db")) {
+                bullets.add(String.format("Yêu cầu kỹ thuật: %s nhắc nhở thiết lập cấu hình: \"%s\"", sender, extractKeySentence(content)));
+            } else {
+                bullets.add(String.format("Lưu ý từ %s: \"%s\"", sender, extractKeySentence(content)));
+            }
+        }
+
+        // Deduplicate summary bullets if identical
+        List<String> uniqueBullets = bullets.stream().distinct().collect(Collectors.toList());
+        return String.join("\n", uniqueBullets);
+    }
+
+    private String extractKeySentence(String content) {
+        if (content == null || content.trim().isEmpty()) {
+            return "";
+        }
+        String[] sentences = content.split("[.!?\n]+");
+        for (String sentence : sentences) {
+            String clean = sentence.trim();
+            if (clean.length() > 10) {
+                return clean;
+            }
+        }
+        return content.trim();
+    }
+
+    private Map<String, Object> buildWebSocketPayload(AggregatedSummary summary, List<ChatMessageDto> originals) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", summary.getId());
+        map.put("timestamp", "Vừa xong");
+        map.put("conversationId", summary.getConversationId());
+
+        // Summaries list
+        List<String> bullets = new ArrayList<>();
+        if (summary.getSummaryText() != null) {
+            for (String line : summary.getSummaryText().split("\n")) {
+                if (!line.trim().isEmpty()) {
+                    bullets.add(line.trim());
+                }
+            }
+        }
+        map.put("aiSummary", bullets);
+
+        // Map originals to simplified objects
+        map.put("originalMessages", originals);
+
+        // Combined original text
+        StringBuilder combinedContent = new StringBuilder();
+        for (int i = 0; i < originals.size(); i++) {
+            if (i > 0) {
+                combinedContent.append("\n\n");
+            }
+            ChatMessageDto msg = originals.get(i);
+            combinedContent.append("[").append(msg.getPlatform()).append("] ")
+                    .append(msg.getSender()).append(": ").append(msg.getContent());
+        }
+        map.put("originalMessage", combinedContent.toString());
+
+        // Heuristics
+        String sender = "Ban Giám Khảo (Tổng hợp)";
+        String platform = "DISCORD";
+        String importance = "MEDIUM";
+        Set<String> tags = new HashSet<>();
+        tags.add("tóm-tắt");
+
+        if (!originals.isEmpty()) {
+            if (originals.size() == 1) {
+                sender = originals.get(0).getSender();
+                platform = originals.get(0).getPlatform();
+            } else {
+                StringBuilder senders = new StringBuilder();
+                for (int i = 0; i < Math.min(originals.size(), 2); i++) {
+                    if (i > 0) senders.append(", ");
+                    senders.append(originals.get(i).getSender());
+                }
+                if (originals.size() > 2) {
+                    senders.append(" +").append(originals.size() - 2);
+                }
+                sender = "BGK: " + senders.toString();
+                
+                boolean hasDiscord = originals.stream().anyMatch(m -> "DISCORD".equalsIgnoreCase(m.getPlatform()));
+                boolean hasWhatsapp = originals.stream().anyMatch(m -> "WHATSAPP".equalsIgnoreCase(m.getPlatform()));
+                if (hasDiscord && hasWhatsapp) {
+                    platform = "DISCORD";
+                } else if (hasWhatsapp) {
+                    platform = "WHATSAPP";
+                }
+            }
+
+            boolean hasHigh = false;
+            for (ChatMessageDto msg : originals) {
+                String content = msg.getContent().toLowerCase();
+                if (content.contains("hạn chót") || content.contains("deadline") || content.contains("khẩn cấp") || content.contains("dời") || content.contains("urgent")) {
+                    hasHigh = true;
+                }
+                if (content.contains("deadline") || content.contains("hạn")) tags.add("deadline");
+                if (content.contains("luật") || content.contains("thể lệ")) tags.add("thể-lệ");
+                if (content.contains("docker") || content.contains("compose")) tags.add("docker");
+                if (content.contains("api") || content.contains("spring")) tags.add("backend");
+                if (content.contains("ui") || content.contains("ux")) tags.add("frontend");
+            }
+            if (hasHigh) {
+                importance = "HIGH";
+            }
+        }
+
+        map.put("sender", sender);
+        map.put("platform", platform);
+        map.put("importance", importance);
+        map.put("tags", new ArrayList<>(tags));
+
+        return map;
     }
 }

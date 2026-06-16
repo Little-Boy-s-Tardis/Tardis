@@ -33,6 +33,9 @@ public class WebhookControllerTest {
     @MockitoBean
     private RabbitTemplate rabbitTemplate;
 
+    @MockitoBean
+    private com.antigravity.chatprocessor.repository.RawWebhookMessageRepository rawWebhookMessageRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
 

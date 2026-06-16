@@ -2,7 +2,6 @@ package com.antigravity.chatprocessor.service;
 
 import com.antigravity.chatprocessor.dto.ChatMessageDto;
 import jakarta.annotation.PreDestroy;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-@Slf4j
 @Service
 public class ChatBatcherService {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ChatBatcherService.class);
 
     private final AISummarizerService aiSummarizerService;
     private final int maxDelayMinutes;
@@ -34,11 +34,9 @@ public class ChatBatcherService {
     }
 
     public void addMessageToBatch(ChatMessageDto message) {
-        String conversationId = message.getConversationId();
-        if (conversationId == null) {
-            log.warn("Message ID {} has no conversationId, skipping batching", message.getId());
-            return;
-        }
+        String rawConvId = message.getConversationId();
+        final String conversationId = (rawConvId == null || rawConvId.trim().isEmpty()) ? "global-contest" : rawConvId;
+        message.setConversationId(conversationId);
 
         activeBatches.compute(conversationId, (key, existingBatch) -> {
             BatchState batch = existingBatch;
