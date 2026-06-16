@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:antigravity;DB_CLOSE_DELAY=-1
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  # Exclude RabbitMQ autoconfiguration to avoid AMQP connection errors
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+# Developer Overrides
+app:
+  batch:
+    silence-delay-seconds: 5
+    max-delay-minutes: 1
+
