@@ -123,7 +123,15 @@ Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks
 curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-1\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg1\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Attention teams: The automated grading system is starting its scan. Ensure all Spring Boot controllers use the /api/v1 prefix and have CORS properly configured.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
 ```
 
-### 3. Running Automated Tests
+### 3. Verification API (GET Announcements)
+To check the stored list of processed and AI-summarized announcements directly from the database, you can visit the following live URL or run this command:
+* **Live API URL**: [https://tardis-production.up.railway.app/api/v1/announcements](https://tardis-production.up.railway.app/api/v1/announcements)
+* **cURL command**:
+  ```bash
+  curl https://tardis-production.up.railway.app/api/v1/announcements
+  ```
+
+### 4. Running Automated Tests
 To run the offline unit and integration test suites on the Spring Boot backend:
 ```bash
 cd backend
