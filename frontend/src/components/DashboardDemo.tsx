@@ -51,7 +51,7 @@ export function DashboardDemo() {
 
     // 2. STOMP over WebSocket connection
     let ws: WebSocket;
-    let reconnectTimeout: any;
+    let reconnectTimeout: ReturnType<typeof setTimeout> | undefined;
 
     const connectWebSocket = () => {
       console.log("Connecting to WebSocket stomp endpoint...");
