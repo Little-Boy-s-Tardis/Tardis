@@ -76,13 +76,13 @@ If you want to use real AI summaries:
 --- ## Testing & Verification Guide
 
 ### 1. Webhook Simulator (React UI)
-On the right-hand panel of the dashboard (`http://localhost:5173`), you can use the **Webhook Simulator** widget:
+On the right-hand panel of the live dashboard ([tardis-hazel.vercel.app](https://tardis-hazel.vercel.app/)) or local dashboard (`http://localhost:5173`), you can use the **Webhook Simulator** widget:
 1. Choose the platform (**Discord Webhook** or **WhatsApp Cloud API**).
 2. Set the importance level (**HIGH**, **MEDIUM**, or **LOW**).
 3. Type in a sender name and a long, detailed announcement message.
 4. Click **Send Webhook & Summarize**.
 5. Watch the active pipeline indicator transition live:
-   `Webhook Ingestion`  `RabbitMQ Queue`  `AI Processing`  `Realtime Broadcast`
+   `Webhook Ingestion` ➔ `RabbitMQ Queue` ➔ `AI Processing` ➔ `Realtime Broadcast`
 6. The compiled summary card will immediately pop up in the Live Feed on the left.
 
 ### 2. Manual Webhook Trigger via Terminal (cURL / PowerShell)
@@ -113,14 +113,14 @@ $body = @{
   })
 } | ConvertTo-Json -Depth 10
 $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
-Invoke-RestMethod -Uri "http://localhost:8080/api/v1/webhooks/whatsapp" -Method Post -ContentType "application/json" -Body $bodyBytes
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp" -Method Post -ContentType "application/json" -Body $bodyBytes
 ```
 
-*(Note: In the command above, we have set the endpoint to `http://localhost:8080` for local verification. If testing the deployed cloud version, use `https://tardis-production.up.railway.app` as documented in `test_scenarios.md`)*.
+*(Note: The command above points to the production server. If testing on your local development environment, replace "https://tardis-production.up.railway.app" with "http://localhost:8080".)*
 
 #### **CMD/cURL Scenario 1 (Technical Announcement)**:
 ```bash
-curl -X POST http://localhost:8080/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-1\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg1\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Attention teams: The automated grading system is starting its scan. Ensure all Spring Boot controllers use the /api/v1 prefix and have CORS properly configured.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-1\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg1\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Attention teams: The automated grading system is starting its scan. Ensure all Spring Boot controllers use the /api/v1 prefix and have CORS properly configured.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
 ```
 
 ### 3. Running Automated Tests
