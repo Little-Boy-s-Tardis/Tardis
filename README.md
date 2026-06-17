@@ -123,8 +123,17 @@ Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks
 curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-1\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge David (Tech Lead)\"},\"wa_id\":\"84911112222\"}],\"messages\":[{\"from\":\"84911112222\",\"id\":\"wamid.testmsg1\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Attention teams: The automated grading system is starting its scan. Ensure all Spring Boot controllers use the /api/v1 prefix and have CORS properly configured.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
 ```
 
-### 3. Verification API (GET Announcements)
-To check the stored list of processed and AI-summarized announcements directly from the database, you can visit the following live URL or run this command:
+### 3. Verification (Frontend UI & REST API)
+
+After sending a simulated webhook via Terminal (cURL/PowerShell), you can verify the result in two ways:
+
+#### A. Frontend Dashboard (Real-Time Live Update)
+1. Open the live dashboard at [tardis-hazel.vercel.app](https://tardis-hazel.vercel.app/) (or your local dashboard `http://localhost:5173`).
+2. Keep the page open while you run the test commands in your terminal.
+3. The new announcement card will **pop up instantly** in the Live Feed on the left panel via WebSocket, displaying the AI-summarized bullet points and tags.
+
+#### B. REST API (GET Historical Announcements)
+You can directly fetch the raw JSON list of all processed and stored announcements from the database:
 * **Live API URL**: [https://tardis-production.up.railway.app/api/v1/announcements](https://tardis-production.up.railway.app/api/v1/announcements)
 * **cURL command**:
   ```bash
