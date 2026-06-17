@@ -1,6 +1,6 @@
-# Project Antigravity Backend - Chat Processor
+# Tardis Backend - Chat Processor
 
-This is the foundational Spring Boot chat processing backend for **Project Antigravity**, configured to handle high-volume Discord and WhatsApp webhook message ingestion, RabbitMQ queuing, thread-safe debounce/timeout conversation batching, and stubbed AI summarization.
+This is the foundational Spring Boot chat processing backend for **Tardis**, configured to handle high-volume Discord and WhatsApp webhook message ingestion, RabbitMQ queuing, thread-safe debounce/timeout conversation batching, and stubbed AI summarization.
 
 --- ## Prerequisites
 
