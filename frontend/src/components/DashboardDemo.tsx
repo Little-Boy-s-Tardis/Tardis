@@ -154,7 +154,7 @@ export function DashboardDemo() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Webhook-Token': 'antigravity-secret-verify-token'
+        'X-Webhook-Token': 'tardis-secret-verify-token'
       },
       body: JSON.stringify(payload)
     })

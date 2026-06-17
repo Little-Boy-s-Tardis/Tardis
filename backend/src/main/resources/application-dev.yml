@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:antigravity;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:tardis;DB_CLOSE_DELAY=-1
     username: sa
     password: password
     driver-class-name: org.h2.Driver

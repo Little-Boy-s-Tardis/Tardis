@@ -23,7 +23,7 @@ In this mode, you do **not** need to install or run PostgreSQL or RabbitMQ. The 
    ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
    ```
 3. The server will boot on `http://localhost:8080`.
-4. **H2 Database Console**: Accessible at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:antigravity`, User: `sa`, Password: `password`).
+4. **H2 Database Console**: Accessible at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:tardis`, User: `sa`, Password: `password`).
 
 --- ### Mode B: Production/Docker Mode (Uses real PostgreSQL & RabbitMQ)
 Use this mode to test with real database persistence and message queuing.
@@ -51,7 +51,7 @@ While the server is running on `localhost:8080`, you can simulate Discord and Wh
 #### **Discord Webhook**
 ```bash
 curl -i -X POST http://localhost:8080/api/v1/webhooks/discord \
-  -H "X-Webhook-Token: antigravity-secret-verify-token" \
+  -H "X-Webhook-Token: tardis-secret-verify-token" \
   -H "Content-Type: application/json" \
   -d '{"sender": "DiscordUser", "content": "Hello world from Discord!", "conversationId": "channel-123"}'
 ```
@@ -59,7 +59,7 @@ curl -i -X POST http://localhost:8080/api/v1/webhooks/discord \
 #### **WhatsApp Webhook**
 ```bash
 curl -i -X POST http://localhost:8080/api/v1/webhooks/whatsapp \
-  -H "X-Webhook-Token: antigravity-secret-verify-token" \
+  -H "X-Webhook-Token: tardis-secret-verify-token" \
   -H "Content-Type: application/json" \
   -d '{"sender": "+1234567890", "content": "Hello world from WhatsApp!", "conversationId": "chat-456"}'
 ```

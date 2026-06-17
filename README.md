@@ -28,7 +28,7 @@ In this mode, you do not need PostgreSQL, RabbitMQ, or Docker. The backend runs 
    ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
    ```
 3. The backend server will boot on `http://localhost:8080`.
-4. **H2 Console**: Accessible at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:antigravity`, User: `sa`, Password: `password`).
+4. **H2 Console**: Accessible at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:tardis`, User: `sa`, Password: `password`).
 
 #### 2. Start the Frontend Dashboard
 1. Open a new terminal and navigate to the frontend directory:

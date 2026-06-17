@@ -31,7 +31,7 @@ app:
   cors:
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,https://tardis-hazel.vercel.app}
   webhook:
-    verify-token: ${APP_WEBHOOK_VERIFY_TOKEN:antigravity-secret-verify-token}
+    verify-token: ${APP_WEBHOOK_VERIFY_TOKEN:tardis-secret-verify-token}
   rabbitmq:
     queue-name: ${APP_RABBITMQ_QUEUE_NAME:chat.messages.queue}
     exchange-name: ${APP_RABBITMQ_EXCHANGE_NAME:chat.messages.exchange}

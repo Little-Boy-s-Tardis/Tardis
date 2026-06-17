@@ -266,7 +266,7 @@ public class WebhookController {
     }
 
     private boolean isValidToken(String token) {
-        return verifyToken.equals(token) || "antigravity-secret-verify-token".equals(token);
+        return verifyToken.equals(token) || "tardis-secret-verify-token".equals(token);
     }
 
     private String computeMessageHash(ChatMessageDto dto) {
