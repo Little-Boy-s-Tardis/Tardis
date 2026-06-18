@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Send, Search, SlidersHorizontal, Sparkles, MessageSquare, AlertCircle, BarChart2, ShieldAlert } from 'lucide-react';
+import { Send, Search, SlidersHorizontal, Sparkles, MessageSquare, AlertCircle, BarChart2, ShieldAlert, Globe } from 'lucide-react';
 import './DashboardDemo.css';
 
 interface Announcement {
@@ -18,11 +18,64 @@ const WS_URL = import.meta.env.VITE_WS_URL || (API_BASE_URL.startsWith('https')
   ? `wss://${API_BASE_URL.replace(/^https?:\/\//, '')}/ws`
   : `ws://${API_BASE_URL.replace(/^https?:\/\//, '')}/ws`);
 
+const localTz = (() => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    return 'UTC';
+  }
+})();
+
+const TIMEZONES_LIST = [
+  { value: 'Asia/Ho_Chi_Minh', label: 'Ho Chi Minh City (GMT+7)' },
+  { value: 'UTC', label: 'UTC / GMT' },
+  { value: 'Asia/Singapore', label: 'Singapore (GMT+8)' },
+  { value: 'Asia/Tokyo', label: 'Tokyo (GMT+9)' },
+  { value: 'Europe/London', label: 'London (GMT+0/+1)' },
+  { value: 'America/New_York', label: 'New York (GMT-5/-4)' },
+  { value: 'America/Los_Angeles', label: 'Los Angeles (GMT-8/-7)' }
+];
+
+const getUniqueTimezones = () => {
+  const list = [...TIMEZONES_LIST];
+  if (localTz && !list.some(tz => tz.value === localTz)) {
+    list.push({ value: localTz, label: `Local (${localTz})` });
+  }
+  return list;
+};
+
+const UNIQUE_TIMEZONES = getUniqueTimezones();
+
+const formatTimestamp = (timestampStr: string, timeZone: string) => {
+  if (!timestampStr) return '';
+  if (timestampStr === 'Just now') return 'Just now';
+  
+  try {
+    const date = new Date(timestampStr);
+    if (isNaN(date.getTime())) return timestampStr;
+    
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: timeZone,
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(date);
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return timestampStr;
+  }
+};
+
 export function DashboardDemo() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [search, setSearch] = useState('');
   const [platformFilter, setPlatformFilter] = useState<'ALL' | 'DISCORD' | 'WHATSAPP'>('ALL');
   const [importanceFilter, setImportanceFilter] = useState<'ALL' | 'HIGH' | 'MEDIUM' | 'LOW'>('ALL');
+  const [selectedTimezone, setSelectedTimezone] = useState<string>('Asia/Ho_Chi_Minh');
   
   // Simulator form state
   const [simSender, setSimSender] = useState('');
@@ -346,6 +399,19 @@ export function DashboardDemo() {
                     </button>
                   </div>
                 </div>
+
+                <div className="filter-group">
+                  <span className="filter-label"><Globe size={14} /> Timezone:</span>
+                  <select
+                    value={selectedTimezone}
+                    onChange={(e) => setSelectedTimezone(e.target.value)}
+                    className="timezone-select"
+                  >
+                    {UNIQUE_TIMEZONES.map(tz => (
+                      <option key={tz.value} value={tz.value}>{tz.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -369,7 +435,7 @@ export function DashboardDemo() {
                         <h4 className="sender-title">{item.sender}</h4>
                       </div>
                       <div className="time-meta">
-                        <span className="text-small text-muted">{item.timestamp}</span>
+                        <span className="text-small text-muted">{formatTimestamp(item.timestamp, selectedTimezone)}</span>
                         <span className={`importance-tag level-${item.importance.toLowerCase()}`}>
                           {item.importance === 'HIGH' ? 'High' : item.importance === 'MEDIUM' ? 'Medium' : 'Low'}
                         </span>
