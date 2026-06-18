@@ -84,10 +84,7 @@ public class WebhookController {
 
         // Deduplication Check
         String hash = computeMessageHash(messageDto);
-        Instant twoHoursAgo = Instant.now().minus(Duration.ofHours(2));
-        int count = rawWebhookMessageRepository.countByMessageHashAndTimestampAfter(hash, twoHoursAgo);
-        
-        if (count > 0) {
+        if (rawWebhookMessageRepository.existsByMessageHash(hash)) {
             log.info("Duplicate Discord message detected (hash: {}). Dropping and returning 200 OK.", hash);
             return ResponseEntity.ok().build();
         }
@@ -232,10 +229,7 @@ public class WebhookController {
 
         // Deduplication Check
         String hash = computeMessageHash(messageDto);
-        Instant twoHoursAgo = Instant.now().minus(Duration.ofHours(2));
-        int count = rawWebhookMessageRepository.countByMessageHashAndTimestampAfter(hash, twoHoursAgo);
-        
-        if (count > 0) {
+        if (rawWebhookMessageRepository.existsByMessageHash(hash)) {
             log.info("Duplicate WhatsApp message detected (hash: {}). Dropping and returning 200 OK.", hash);
             return ResponseEntity.ok().build();
         }
@@ -276,7 +270,7 @@ public class WebhookController {
                 dto.getPlatform(),
                 dto.getConversationId() != null ? dto.getConversationId().trim() : "");
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            MessageDigest digest = MessageDigest.getInstance("MD5");
             byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
             
             StringBuilder hexString = new StringBuilder(2 * encodedHash.length);
@@ -289,7 +283,7 @@ public class WebhookController {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            log.error("SHA-256 algorithm not found", e);
+            log.error("MD5 algorithm not found", e);
             return UUID.randomUUID().toString(); // Fallback to avoid complete failure
         }
     }

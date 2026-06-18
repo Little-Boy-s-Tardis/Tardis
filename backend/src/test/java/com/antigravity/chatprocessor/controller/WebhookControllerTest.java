@@ -116,4 +116,42 @@ public class WebhookControllerTest {
                 any(ChatMessageDto.class)
         );
     }
+
+    @Test
+    public void whenDuplicateDiscordMessage_thenReturns200AndDoesNotQueueMessage() throws Exception {
+        ChatMessageDto message = ChatMessageDto.builder()
+                .sender("User1")
+                .content("Hello from Discord")
+                .conversationId("conv-1")
+                .build();
+
+        Mockito.when(rawWebhookMessageRepository.existsByMessageHash(any(String.class))).thenReturn(true);
+
+        mockMvc.perform(post("/api/v1/webhooks/discord")
+                        .header("X-Webhook-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(message)))
+                .andExpect(status().isOk());
+
+        Mockito.verifyNoInteractions(rabbitTemplate);
+    }
+
+    @Test
+    public void whenDuplicateWhatsappMessage_thenReturns200AndDoesNotQueueMessage() throws Exception {
+        ChatMessageDto message = ChatMessageDto.builder()
+                .sender("User2")
+                .content("Hello from WhatsApp")
+                .conversationId("conv-2")
+                .build();
+
+        Mockito.when(rawWebhookMessageRepository.existsByMessageHash(any(String.class))).thenReturn(true);
+
+        mockMvc.perform(post("/api/v1/webhooks/whatsapp")
+                        .header("X-Webhook-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(message)))
+                .andExpect(status().isOk());
+
+        Mockito.verifyNoInteractions(rabbitTemplate);
+    }
 }
