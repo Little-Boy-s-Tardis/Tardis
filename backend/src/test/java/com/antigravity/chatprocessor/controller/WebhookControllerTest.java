@@ -154,4 +154,64 @@ public class WebhookControllerTest {
 
         Mockito.verifyNoInteractions(rabbitTemplate);
     }
+
+    @Test
+    public void whenDiscordSaveThrowsDataIntegrityViolation_thenReturns200AndDoesNotQueueMessage() throws Exception {
+        ChatMessageDto message = ChatMessageDto.builder()
+                .sender("User1")
+                .content("Hello from Discord")
+                .conversationId("conv-1")
+                .build();
+
+        Mockito.when(rawWebhookMessageRepository.save(any(com.antigravity.chatprocessor.model.RawWebhookMessage.class)))
+                .thenThrow(new org.springframework.dao.DataIntegrityViolationException("Duplicate key"));
+
+        mockMvc.perform(post("/api/v1/webhooks/discord")
+                        .header("X-Webhook-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(message)))
+                .andExpect(status().isOk());
+
+        Mockito.verifyNoInteractions(rabbitTemplate);
+    }
+
+    @Test
+    public void whenWhatsappSaveThrowsDataIntegrityViolation_thenReturns200AndDoesNotQueueMessage() throws Exception {
+        ChatMessageDto message = ChatMessageDto.builder()
+                .sender("User2")
+                .content("Hello from WhatsApp")
+                .conversationId("conv-2")
+                .build();
+
+        Mockito.when(rawWebhookMessageRepository.save(any(com.antigravity.chatprocessor.model.RawWebhookMessage.class)))
+                .thenThrow(new org.springframework.dao.DataIntegrityViolationException("Duplicate key"));
+
+        mockMvc.perform(post("/api/v1/webhooks/whatsapp")
+                        .header("X-Webhook-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(message)))
+                .andExpect(status().isOk());
+
+        Mockito.verifyNoInteractions(rabbitTemplate);
+    }
+
+    @Test
+    public void whenDiscordSaveThrowsGenericException_thenReturns500AndDoesNotQueueMessage() throws Exception {
+        ChatMessageDto message = ChatMessageDto.builder()
+                .sender("User1")
+                .content("Hello from Discord")
+                .conversationId("conv-1")
+                .build();
+
+        Mockito.when(rawWebhookMessageRepository.save(any(com.antigravity.chatprocessor.model.RawWebhookMessage.class)))
+                .thenThrow(new RuntimeException("DB offline"));
+
+        mockMvc.perform(post("/api/v1/webhooks/discord")
+                        .header("X-Webhook-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(message)))
+                .andExpect(status().isInternalServerError());
+
+        Mockito.verifyNoInteractions(rabbitTemplate);
+    }
 }

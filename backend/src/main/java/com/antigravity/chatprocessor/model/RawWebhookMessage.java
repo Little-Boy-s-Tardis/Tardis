@@ -5,7 +5,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "raw_webhook_messages", indexes = {
-    @Index(name = "idx_message_hash", columnList = "messageHash")
+    @Index(name = "idx_message_hash", columnList = "messageHash", unique = true)
 })
 public class RawWebhookMessage {
 
@@ -28,7 +28,7 @@ public class RawWebhookMessage {
     @Column(nullable = false)
     private Instant timestamp;
 
-    @Column(name = "message_hash", nullable = false, length = 64)
+    @Column(name = "message_hash", nullable = false, length = 64, unique = true)
     private String messageHash;
 
     public RawWebhookMessage() {}
