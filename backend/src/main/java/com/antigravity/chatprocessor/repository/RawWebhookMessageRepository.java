@@ -11,10 +11,10 @@ import java.util.List;
 public interface RawWebhookMessageRepository extends JpaRepository<RawWebhookMessage, String> {
     
     /**
-     * Counts the number of times a message hash appears after a given timestamp.
+     * Checks if a message hash already exists in the database.
      * Used for deduplicating webhook calls.
      */
-    int countByMessageHashAndTimestampAfter(String messageHash, Instant timestamp);
+    boolean existsByMessageHash(String messageHash);
 
     /**
      * Find messages by IDs.
