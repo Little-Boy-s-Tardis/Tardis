@@ -23,18 +23,20 @@
   font-weight: 600;
   color: var(--c-charcoal);
   font-size: 20px;
+  cursor: pointer;
 }
 
-.brand-icon {
-  background-color: var(--c-primary);
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  border: 2px solid var(--c-charcoal);
-  font-size: 14px;
+.tardis-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  filter: drop-shadow(2px 2px 0px var(--c-charcoal));
+}
+
+.nav-brand:hover .tardis-logo {
+  transform: scale(1.18) rotate(-6deg);
 }
 
 .live-status-indicator {

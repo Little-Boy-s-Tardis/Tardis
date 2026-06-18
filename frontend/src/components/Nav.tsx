@@ -5,7 +5,7 @@ export function Nav() {
     <nav className="primary-nav">
       <div className="nav-container">
         <div className="nav-brand">
-          <span className="brand-icon">T</span>
+          <img src="/logo.png" alt="Tardis Logo" className="tardis-logo" />
           <span className="brand-text">Tardis</span>
           <span className="brand-subtext text-muted text-small" style={{ fontSize: '12px', marginLeft: '4px' }}>Judges Aggregator</span>
         </div>
