@@ -573,3 +573,23 @@
   text-align: center;
   font-weight: 600;
 }
+
+.timezone-select {
+  font-family: inherit;
+  border: 3px solid var(--c-charcoal);
+  border-radius: var(--br-sm);
+  padding: 6px 12px;
+  font-size: 13px;
+  background-color: var(--c-bg-soft);
+  outline: none;
+  font-weight: 600;
+  color: var(--c-slate);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 220px;
+}
+
+.timezone-select:focus {
+  background-color: var(--c-white);
+  box-shadow: 2px 2px 0px var(--c-charcoal);
+}
