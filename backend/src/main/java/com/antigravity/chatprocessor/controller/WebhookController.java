@@ -103,8 +103,12 @@ public class WebhookController {
         try {
             rawWebhookMessageRepository.save(backupMsg);
             log.debug("Successfully backed up raw Discord message ID: {}", messageDto.getId());
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            log.info("Duplicate Discord message detected via database constraint (hash: {}). Dropping and returning 200 OK.", hash);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error("Failed to backup raw Discord message to database", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
         // Publish to RabbitMQ
@@ -248,8 +252,12 @@ public class WebhookController {
         try {
             rawWebhookMessageRepository.save(backupMsg);
             log.debug("Successfully backed up raw WhatsApp message ID: {}", messageDto.getId());
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            log.info("Duplicate WhatsApp message detected via database constraint (hash: {}). Dropping and returning 200 OK.", hash);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error("Failed to backup raw WhatsApp message to database", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
         // Publish to RabbitMQ
