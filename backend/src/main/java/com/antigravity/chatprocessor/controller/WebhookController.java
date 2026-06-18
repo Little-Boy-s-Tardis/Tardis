@@ -203,6 +203,9 @@ public class WebhookController {
                 messageDto.setContent((String) payload.get("content"));
                 messageDto.setConversationId((String) payload.get("conversationId"));
                 messageDto.setPlatform("WHATSAPP");
+                if (payload.containsKey("importance")) {
+                    messageDto.setImportance((String) payload.get("importance"));
+                }
 
                 String tsStr = (String) payload.get("timestamp");
                 if (tsStr != null) {

@@ -196,7 +196,8 @@ export function DashboardDemo() {
     const payload = {
       sender: simSender,
       content: simMessage,
-      conversationId: 'global-contest'
+      conversationId: 'global-contest',
+      importance: simImportance
     };
 
     const endpoint = simPlatform === 'DISCORD' 

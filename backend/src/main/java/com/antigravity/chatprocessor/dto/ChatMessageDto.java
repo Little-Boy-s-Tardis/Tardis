@@ -12,16 +12,18 @@ public class ChatMessageDto implements Serializable {
     private String platform; // DISCORD, WHATSAPP
     private String conversationId;
     private Instant timestamp;
+    private String importance; // HIGH, MEDIUM, LOW
 
     public ChatMessageDto() {}
 
-    public ChatMessageDto(String id, String sender, String content, String platform, String conversationId, Instant timestamp) {
+    public ChatMessageDto(String id, String sender, String content, String platform, String conversationId, Instant timestamp, String importance) {
         this.id = id;
         this.sender = sender;
         this.content = content;
         this.platform = platform;
         this.conversationId = conversationId;
         this.timestamp = timestamp;
+        this.importance = importance;
     }
 
     public String getId() { return id; }
@@ -42,6 +44,9 @@ public class ChatMessageDto implements Serializable {
     public Instant getTimestamp() { return timestamp; }
     public void setTimestamp(Instant timestamp) { this.timestamp = timestamp; }
 
+    public String getImportance() { return importance; }
+    public void setImportance(String importance) { this.importance = importance; }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -53,6 +58,7 @@ public class ChatMessageDto implements Serializable {
         private String platform;
         private String conversationId;
         private Instant timestamp;
+        private String importance;
 
         public Builder id(String id) { this.id = id; return this; }
         public Builder sender(String sender) { this.sender = sender; return this; }
@@ -60,9 +66,10 @@ public class ChatMessageDto implements Serializable {
         public Builder platform(String platform) { this.platform = platform; return this; }
         public Builder conversationId(String conversationId) { this.conversationId = conversationId; return this; }
         public Builder timestamp(Instant timestamp) { this.timestamp = timestamp; return this; }
+        public Builder importance(String importance) { this.importance = importance; return this; }
 
         public ChatMessageDto build() {
-            return new ChatMessageDto(id, sender, content, platform, conversationId, timestamp);
+            return new ChatMessageDto(id, sender, content, platform, conversationId, timestamp, importance);
         }
     }
 }

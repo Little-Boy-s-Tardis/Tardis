@@ -244,19 +244,34 @@ public class AISummarizerService {
             }
 
             boolean hasHigh = false;
+            boolean hasLow = false;
+            String explicitImportance = null;
+
             for (ChatMessageDto msg : originals) {
-                String content = msg.getContent().toLowerCase();
-                if (content.contains("deadline") || content.contains("urgent") || content.contains("emergency") || content.contains("critical")) {
-                    hasHigh = true;
+                if (msg.getImportance() != null && !msg.getImportance().trim().isEmpty()) {
+                    explicitImportance = msg.getImportance().toUpperCase();
                 }
+
+                String content = msg.getContent().toLowerCase();
+                if (content.contains("deadline") || content.contains("urgent") || content.contains("emergency") || content.contains("critical") || content.contains("important")) {
+                    hasHigh = true;
+                } else if (content.contains("minor") || content.contains("fyi") || content.contains("trivial") || content.contains("reminder") || content.contains("optional") || content.contains("info")) {
+                    hasLow = true;
+                }
+
                 if (content.contains("deadline")) tags.add("deadline");
                 if (content.contains("rules") || content.contains("rule") || content.contains("guideline")) tags.add("rules");
                 if (content.contains("docker") || content.contains("compose")) tags.add("docker");
                 if (content.contains("api") || content.contains("spring")) tags.add("backend");
                 if (content.contains("ui") || content.contains("ux")) tags.add("frontend");
             }
-            if (hasHigh) {
+
+            if (explicitImportance != null && (explicitImportance.equals("HIGH") || explicitImportance.equals("MEDIUM") || explicitImportance.equals("LOW"))) {
+                importance = explicitImportance;
+            } else if (hasHigh) {
                 importance = "HIGH";
+            } else if (hasLow) {
+                importance = "LOW";
             }
         }
 
