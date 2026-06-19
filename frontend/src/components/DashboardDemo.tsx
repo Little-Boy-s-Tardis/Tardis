@@ -122,9 +122,18 @@ export function DashboardDemo() {
           console.log("STOMP session connected. Subscribing to /topic/announcements...");
           ws.send("SUBSCRIBE\nid:sub-0\ndestination:/topic/announcements\n\n\u0000");
         } else if (msg.startsWith("MESSAGE")) {
-          const bodyStartIndex = msg.indexOf("\n\n") + 2;
+          let bodyStartIndex = msg.indexOf("\r\n\r\n");
+          if (bodyStartIndex !== -1) {
+            bodyStartIndex += 4;
+          } else {
+            bodyStartIndex = msg.indexOf("\n\n");
+            if (bodyStartIndex !== -1) {
+              bodyStartIndex += 2;
+            }
+          }
+          
           const bodyEndIndex = msg.lastIndexOf("\u0000");
-          if (bodyStartIndex > 1 && bodyEndIndex > -1) {
+          if (bodyStartIndex !== -1 && bodyEndIndex > -1) {
             const jsonBody = msg.substring(bodyStartIndex, bodyEndIndex).trim();
             try {
               const data = JSON.parse(jsonBody);
