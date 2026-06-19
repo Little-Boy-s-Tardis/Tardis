@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Send, Search, SlidersHorizontal, Sparkles, MessageSquare, AlertCircle, BarChart2, ShieldAlert, Globe } from 'lucide-react';
+import { Send, Search, SlidersHorizontal, Sparkles, MessageSquare, AlertCircle, BarChart2, ShieldAlert, Globe, RefreshCw } from 'lucide-react';
 import './DashboardDemo.css';
 
 interface Announcement {
@@ -92,16 +92,20 @@ export function DashboardDemo() {
     setExpandedCards(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  useEffect(() => {
-    // 1. Fetch historical announcements
+  const fetchData = () => {
     fetch(`${API_BASE_URL}/api/v1/announcements`)
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setAnnouncements(data);
         }
       })
       .catch(err => console.warn("Backend offline. Operating in simulation mode with mock data.", err));
+  };
+
+  useEffect(() => {
+    // 1. Fetch historical announcements
+    fetchData();
 
     // 2. STOMP over WebSocket connection
     let ws: WebSocket;
@@ -350,15 +354,25 @@ export function DashboardDemo() {
             <div className="feed-controls-box doodle-border">
               
               {/* Search Bar */}
-              <div className="search-wrapper">
-                <Search className="search-icon" size={18} />
-                <input 
-                  type="text" 
-                  placeholder="Search by sender, content, or tag..." 
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="search-input"
-                />
+              <div className="search-wrapper" style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <Search className="search-icon" size={20} />
+                  <input 
+                    type="text" 
+                    className="search-input" 
+                    placeholder="Search sender, tags, content..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+                <button 
+                  className="filter-btn" 
+                  onClick={fetchData}
+                  title="Reload data from database"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px' }}
+                >
+                  <RefreshCw size={18} />
+                </button>
               </div>
 
               {/* Filtering Options */}
