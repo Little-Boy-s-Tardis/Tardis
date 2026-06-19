@@ -81,6 +81,7 @@ export function DashboardDemo() {
   const [simSender, setSimSender] = useState('');
   const [simPlatform, setSimPlatform] = useState<'DISCORD' | 'WHATSAPP'>('DISCORD');
   const [simImportance, setSimImportance] = useState<'HIGH' | 'MEDIUM' | 'LOW'>('MEDIUM');
+  const [isAiProcessing, setIsAiProcessing] = useState(false);
   const [simMessage, setSimMessage] = useState('');
   
   // Simulation status pipeline
@@ -126,14 +127,20 @@ export function DashboardDemo() {
           if (bodyStartIndex > 1 && bodyEndIndex > -1) {
             const jsonBody = msg.substring(bodyStartIndex, bodyEndIndex).trim();
             try {
-              const newAnnouncement = JSON.parse(jsonBody);
-              console.log("Live message received:", newAnnouncement);
-              setAnnouncements(prev => {
-                if (prev.some(item => item.id === newAnnouncement.id)) {
-                  return prev;
-                }
-                return [newAnnouncement, ...prev];
-              });
+              const data = JSON.parse(jsonBody);
+              if (data.type === 'PROCESSING') {
+                console.log("AI is processing:", data.conversationId);
+                setIsAiProcessing(true);
+              } else {
+                console.log("Live message received:", data);
+                setIsAiProcessing(false);
+                setAnnouncements(prev => {
+                  if (prev.some(item => item.id === data.id)) {
+                    return prev;
+                  }
+                  return [data, ...prev];
+                });
+              }
             } catch (e) {
               console.error("JSON parsing failed for WebSocket frame:", e);
             }
@@ -418,6 +425,23 @@ export function DashboardDemo() {
 
             {/* Announcement Feed */}
             <div className="announcements-feed-list">
+              {isAiProcessing && (
+                <div className="card-default announcement-card skeleton-card">
+                  <div className="skeleton-header">
+                     <div className="skeleton-avatar pulse-anim"></div>
+                     <div className="skeleton-text-short pulse-anim"></div>
+                  </div>
+                  <div className="skeleton-body">
+                     <div className="skeleton-text-long pulse-anim"></div>
+                     <div className="skeleton-text-long pulse-anim" style={{width: '80%'}}></div>
+                  </div>
+                  <div className="processing-text">
+                     <Sparkles className="spin-anim" size={16} /> 
+                     <span>AI is analyzing new announcements...</span>
+                  </div>
+                </div>
+              )}
+
               {filteredAnnouncements.length === 0 ? (
                 <div className="card-default empty-state-card text-center">
                   <p className="text-body text-muted">No announcements found matching the active filters.</p>

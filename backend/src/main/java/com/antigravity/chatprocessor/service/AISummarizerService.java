@@ -45,6 +45,15 @@ public class AISummarizerService {
             return;
         }
 
+        try {
+            Map<String, Object> processingMsg = new HashMap<>();
+            processingMsg.put("type", "PROCESSING");
+            processingMsg.put("conversationId", conversationId);
+            messagingTemplate.convertAndSend("/topic/announcements", processingMsg);
+        } catch (Exception e) {
+            log.warn("Failed to broadcast PROCESSING event", e);
+        }
+
         String summaryText = "";
 
         // Attempt calling Qwen API if API key is provided
