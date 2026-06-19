@@ -177,5 +177,65 @@ Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks
 curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-5\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge Jessica (Design Coach)\"},\"wa_id\":\"84955556666\"}],\"messages\":[{\"from\":\"84955556666\",\"id\":\"wamid.testmsg5\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Urgent update for all teams: We have updated the UI/UX design checklist. Please review it immediately to ensure compliance with contrast standards.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
 ```
 
+--- ## Scenario 7: Discord Server Reboot (Importance: Medium)
+* **Sender**: `Judge Techbot`
+* **Content**: Notice of server restart.
+
+### PowerShell
+```powershell
+$body = @{
+  sender = "Judge Techbot"
+  content = "The submission evaluation server will undergo a restart to apply the latest API patch. Expected downtime is 5 minutes."
+  conversationId = "global-discord-channel"
+} | ConvertTo-Json
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/discord" -Method Post -ContentType "application/json" -Headers @{ "X-Webhook-Token" = "tardis-secret-verify-token" } -Body $bodyBytes
+```
+
+### CMD
+```cmd
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/discord -H "Content-Type: application/json" -H "X-Webhook-Token: tardis-secret-verify-token" -d "{\"sender\":\"Judge Techbot\",\"content\":\"The submission evaluation server will undergo a restart to apply the latest API patch. Expected downtime is 5 minutes.\",\"conversationId\":\"global-discord-channel\"}"
+```
+
+--- ## Scenario 8: Discord Critical Security Bug (Importance: High)
+* **Sender**: `Judge Minh (Chief)`
+* **Content**: Emergency alert regarding an exploit.
+
+### PowerShell
+```powershell
+$body = @{
+  sender = "Judge Minh (Chief)"
+  content = "Emergency Notice: A critical vulnerability was found in the starter template. Teams must update their Docker compose configurations immediately or face a penalty!"
+  conversationId = "global-discord-channel"
+} | ConvertTo-Json
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/discord" -Method Post -ContentType "application/json" -Headers @{ "X-Webhook-Token" = "tardis-secret-verify-token" } -Body $bodyBytes
+```
+
+### CMD
+```cmd
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/discord -H "Content-Type: application/json" -H "X-Webhook-Token: tardis-secret-verify-token" -d "{\"sender\":\"Judge Minh (Chief)\",\"content\":\"Emergency Notice: A critical vulnerability was found in the starter template. Teams must update their Docker compose configurations immediately or face a penalty!\",\"conversationId\":\"global-discord-channel\"}"
+```
+
+--- ## Scenario 9: Discord Optional AMA Session (Importance: Low)
+* **Sender**: `Judge Jessica`
+* **Content**: Invitation to a casual AMA session.
+
+### PowerShell
+```powershell
+$body = @{
+  sender = "Judge Jessica"
+  content = "Just a quick reminder: We are hosting a casual Ask-Me-Anything session tonight. It is completely optional, just FYI for anyone who wants to hang out and talk about design."
+  conversationId = "global-discord-channel"
+} | ConvertTo-Json
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/discord" -Method Post -ContentType "application/json" -Headers @{ "X-Webhook-Token" = "tardis-secret-verify-token" } -Body $bodyBytes
+```
+
+### CMD
+```cmd
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/discord -H "Content-Type: application/json" -H "X-Webhook-Token: tardis-secret-verify-token" -d "{\"sender\":\"Judge Jessica\",\"content\":\"Just a quick reminder: We are hosting a casual Ask-Me-Anything session tonight. It is completely optional, just FYI for anyone who wants to hang out and talk about design.\",\"conversationId\":\"global-discord-channel\"}"
+```
+
 --- ## Testing locally (localhost)
 If you are running the Spring Boot backend service locally, replace `https://tardis-production.up.railway.app` with `http://localhost:8080` in the cURL or PowerShell commands.
