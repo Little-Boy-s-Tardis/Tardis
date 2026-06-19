@@ -253,7 +253,7 @@ public class AISummarizerService {
                 }
 
                 String content = msg.getContent().toLowerCase();
-                if (content.contains("deadline") || content.contains("urgent") || content.contains("emergency") || content.contains("critical") || content.contains("important") || content.contains("reminder")) {
+                if (content.contains("deadline") || content.contains("urgent") || content.contains("emergency") || content.contains("critical") || content.contains("important") || content.contains("reminder") || content.contains("🚨") || content.contains("‼️")) {
                     hasHigh = true;
                 } else if (content.contains("minor") || content.contains("fyi") || content.contains("trivial") || content.contains("optional") || content.contains("info")) {
                     hasLow = true;

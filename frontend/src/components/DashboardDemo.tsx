@@ -438,7 +438,7 @@ export function DashboardDemo() {
                       <div className="time-meta">
                         <span className="text-small text-muted">{formatTimestamp(item.timestamp, selectedTimezone)}</span>
                         <span className={`importance-tag level-${item.importance.toLowerCase()}`}>
-                          {item.importance === 'HIGH' ? 'High' : item.importance === 'MEDIUM' ? 'Medium' : 'Low'}
+                          {item.importance === 'HIGH' ? '🚨 High ‼️' : item.importance === 'MEDIUM' ? 'Medium' : 'Low'}
                         </span>
                       </div>
                     </div>
