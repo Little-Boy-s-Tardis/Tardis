@@ -237,5 +237,80 @@ Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks
 curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/discord -H "Content-Type: application/json" -H "X-Webhook-Token: tardis-secret-verify-token" -d "{\"sender\":\"Judge Jessica\",\"content\":\"Just a quick reminder: We are hosting a casual Ask-Me-Anything session tonight. It is completely optional, just FYI for anyone who wants to hang out and talk about design.\",\"conversationId\":\"global-discord-channel\"}"
 ```
 
+--- ## Scenario 10: Discord Registration Issue (Importance: High)
+* **Sender**: `Judge Sarah`
+* **Content**: Important alert about team registration.
+
+### PowerShell
+```powershell
+$body = @{
+  sender = "Judge Sarah"
+  content = "🚨 URGENT: The team registration portal is currently experiencing a critical database failure. All teams who registered in the last 30 minutes MUST re-submit their forms immediately. Deadline for re-submission is strictly 18:00 today."
+  conversationId = "global-discord-channel"
+} | ConvertTo-Json
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/discord" -Method Post -ContentType "application/json" -Headers @{ "X-Webhook-Token" = "tardis-secret-verify-token" } -Body $bodyBytes
+```
+
+### CMD
+```cmd
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/discord -H "Content-Type: application/json" -H "X-Webhook-Token: tardis-secret-verify-token" -d "{\"sender\":\"Judge Sarah\",\"content\":\"🚨 URGENT: The team registration portal is currently experiencing a critical database failure. All teams who registered in the last 30 minutes MUST re-submit their forms immediately. Deadline for re-submission is strictly 18:00 today.\",\"conversationId\":\"global-discord-channel\"}"
+```
+
+--- ## Scenario 11: WhatsApp Judging Criteria Update (Importance: Medium)
+* **Sender**: `Judge Mark (Technical)`
+* **Content**: Clarification on grading rules.
+
+### PowerShell
+```powershell
+$body = @{
+  object = "whatsapp_business_account"
+  entry = @(@{
+    id = "test-msg-id-11"
+    changes = @(@{
+      value = @{
+        messaging_product = "whatsapp"
+        contacts = @(@{ profile = @{ name = "Judge Mark (Technical)" }; wa_id = "84977778888" })
+        messages = @(@{
+          from = "84977778888"
+          id = "wamid.testmsg11"
+          timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
+          text = @{ body = "Please note that the judging criteria have been slightly updated. Code quality now accounts for 30% of the total score instead of 20%. Ensure your repositories are well-documented before the final review." }
+          type = "text"
+        })
+      }
+      field = "messages"
+    })
+  })
+} | ConvertTo-Json -Depth 10
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp" -Method Post -ContentType "application/json" -Body $bodyBytes
+```
+
+### CMD
+```cmd
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/whatsapp -H "Content-Type: application/json" -d "{\"object\":\"whatsapp_business_account\",\"entry\":[{\"id\":\"test-msg-id-11\",\"changes\":[{\"value\":{\"messaging_product\":\"whatsapp\",\"contacts\":[{\"profile\":{\"name\":\"Judge Mark (Technical)\"},\"wa_id\":\"84977778888\"}],\"messages\":[{\"from\":\"84977778888\",\"id\":\"wamid.testmsg11\",\"timestamp\":\"1697041663\",\"text\":{\"body\":\"Please note that the judging criteria have been slightly updated. Code quality now accounts for 30% of the total score instead of 20%. Ensure your repositories are well-documented before the final review.\"},\"type\":\"text\"}]},\"field\":\"messages\"}]}]}"
+```
+
+--- ## Scenario 12: Discord Free Food (Importance: Low)
+* **Sender**: `Event Staff`
+* **Content**: Free pizza notification.
+
+### PowerShell
+```powershell
+$body = @{
+  sender = "Event Staff"
+  content = "Hey everyone, we just ordered 50 boxes of pizza. They have arrived in the main lobby! Come and grab a slice to recharge for the night. First come, first served!"
+  conversationId = "global-discord-channel"
+} | ConvertTo-Json
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-RestMethod -Uri "https://tardis-production.up.railway.app/api/v1/webhooks/discord" -Method Post -ContentType "application/json" -Headers @{ "X-Webhook-Token" = "tardis-secret-verify-token" } -Body $bodyBytes
+```
+
+### CMD
+```cmd
+curl -X POST https://tardis-production.up.railway.app/api/v1/webhooks/discord -H "Content-Type: application/json" -H "X-Webhook-Token: tardis-secret-verify-token" -d "{\"sender\":\"Event Staff\",\"content\":\"Hey everyone, we just ordered 50 boxes of pizza. They have arrived in the main lobby! Come and grab a slice to recharge for the night. First come, first served!\",\"conversationId\":\"global-discord-channel\"}"
+```
+
 --- ## Testing locally (localhost)
 If you are running the Spring Boot backend service locally, replace `https://tardis-production.up.railway.app` with `http://localhost:8080` in the cURL or PowerShell commands.
