@@ -353,9 +353,8 @@ export function DashboardDemo() {
           <div className="feed-panel">
             <div className="feed-controls-box doodle-border">
               
-              {/* Search Bar */}
-              <div className="search-wrapper" style={{ display: 'flex', gap: '8px' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
+              <div style={{ display: 'flex', gap: '12px', marginBottom: 'var(--s-2)' }}>
+                <div className="search-wrapper" style={{ marginBottom: 0, flex: 1 }}>
                   <Search className="search-icon" size={20} />
                   <input 
                     type="text" 
@@ -369,9 +368,9 @@ export function DashboardDemo() {
                   className="filter-btn" 
                   onClick={fetchData}
                   title="Reload data from database"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px' }}
+                  style={{ height: '48px', padding: '0 16px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
-                  <RefreshCw size={18} />
+                  <RefreshCw size={20} />
                 </button>
               </div>
 
